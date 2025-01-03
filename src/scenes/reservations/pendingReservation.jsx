@@ -40,7 +40,7 @@ const PendingReservation = () => {
     accountNumber: "",
     accountHolder: "",
     phone: "",
-    description: "",
+    reason: "",
   });
   const location = useLocation();
   const query = new URLSearchParams(location.search);
@@ -86,7 +86,7 @@ const PendingReservation = () => {
       accountNumber: "",
       accountHolder: "",
       phone: "",
-      description: "",
+      reason: "",
     });
   };
 
@@ -205,14 +205,8 @@ const PendingReservation = () => {
 
   const handleRefundSubmit = async () => {
     try {
-      if (
-        !refundForm.bankName ||
-        !refundForm.accountNumber ||
-        !refundForm.accountHolder ||
-        !refundForm.phone ||
-        !refundForm.description
-      ) {
-        toast.error("Semua field harus diisi!", { autoClose: 2000 });
+      if (!refundForm.reason) {
+        toast.error("Field 'reason' harus diisi!", { autoClose: 2000 });
         return;
       }
 
@@ -222,7 +216,7 @@ const PendingReservation = () => {
         account_number: refundForm.accountNumber,
         account_holder: refundForm.accountHolder,
         phone: refundForm.phone || reservations.phone,
-        description: refundForm.description,
+        reason: refundForm.reason,
         amount: selectedReservation.dp,
       };
 
@@ -683,11 +677,14 @@ const PendingReservation = () => {
           <TextField
             fullWidth
             margin="normal"
-            label="description"
-            name="description"
-            value={refundForm.description}
+            label="reason"
+            name="reason"
+            value={refundForm.reason}
             onChange={handleInputChange}
+            multiline
+            rows={4} // Menjadikan textarea lebih luas
           />
+
           <Box mt={2} display="flex" justifyContent="flex-end">
             <Button
               variant="contained"

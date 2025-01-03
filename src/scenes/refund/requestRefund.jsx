@@ -156,8 +156,8 @@ const RequestRefunds = () => {
       align: "center",
     },
     {
-      field: "description",
-      headerName: "Description",
+      field: "reason",
+      headerName: "Reason",
       flex: 0.5,
       headerAlign: "center",
       align: "center",

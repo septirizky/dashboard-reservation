@@ -26,7 +26,7 @@ const ConfirmedReservation = () => {
     accountNumber: "",
     accountHolder: "",
     phone: "",
-    description: "",
+    reason: "",
   });
   const location = useLocation();
   const query = new URLSearchParams(location.search);
@@ -59,7 +59,7 @@ const ConfirmedReservation = () => {
       accountNumber: "",
       accountHolder: "",
       phone: "",
-      description: "",
+      reason: "",
     });
   };
 
@@ -126,24 +126,18 @@ const ConfirmedReservation = () => {
 
   const handleRefundSubmit = async () => {
     try {
-      if (
-        !refundForm.bankName ||
-        !refundForm.accountNumber ||
-        !refundForm.accountHolder ||
-        !refundForm.phone ||
-        !refundForm.description
-      ) {
-        toast.error("Semua field harus diisi!", { autoClose: 2000 });
+      if (!refundForm.reason) {
+        toast.error("Field 'reason' harus diisi!", { autoClose: 2000 });
         return;
       }
 
       const refundData = {
         reservationCode: selectedReservation.reservationCode,
-        bank_name: refundForm.bankName,
-        account_number: refundForm.accountNumber,
-        account_holder: refundForm.accountHolder,
-        phone: refundForm.phone || reservations.phone,
-        description: refundForm.description,
+        bank_name: refundForm.bankName || "", // Tidak wajib
+        account_number: refundForm.accountNumber || "", // Tidak wajib
+        account_holder: refundForm.accountHolder || "", // Tidak wajib
+        phone: refundForm.phone || reservations.phone || "", // Tidak wajib
+        reason: refundForm.reason, // Wajib
         amount: selectedReservation.dp,
       };
 
@@ -575,11 +569,15 @@ const ConfirmedReservation = () => {
           <TextField
             fullWidth
             margin="normal"
-            label="description"
-            name="description"
-            value={refundForm.description}
+            label="Reason"
+            name="reason"
+            value={refundForm.reason}
             onChange={handleInputChange}
+            multiline
+            rows={4}
+            required
           />
+
           <Box mt={2} display="flex" justifyContent="flex-end">
             <Button
               variant="contained"
