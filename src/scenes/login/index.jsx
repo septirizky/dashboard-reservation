@@ -33,24 +33,14 @@ const Login = () => {
     setMessage("");
 
     try {
-      const response = await axios.post(
-        `${API}/user/login`,
-        { phone },
-        {
-          headers: {
-            "ngrok-skip-browser-warning": "true",
-          },
-        }
-      );
+      const response = await axios.post(`${API}/user/login`, { phone });
 
       if (response.data) {
         const { token, user } = response.data;
 
-        // Simpan token dan data user ke localStorage
         localStorage.setItem("authToken", token);
         localStorage.setItem("userData", JSON.stringify(user));
 
-        // Arahkan pengguna ke halaman dashboard setelah login berhasil
         navigate("/calendar");
       }
     } catch (error) {
@@ -91,22 +81,22 @@ const Login = () => {
               onChange={(e) => setPhone(e.target.value)}
               required
               sx={{
-                backgroundColor: "#f9f9f9", // Warna latar belakang input lebih terang
-                borderRadius: 1, // Radius border agar tidak terlalu tajam
+                backgroundColor: "#f9f9f9", 
+                borderRadius: 1,
                 "& .MuiOutlinedInput-root": {
                   "& fieldset": {
-                    borderColor: "#888", // Warna border abu-abu untuk kontras
+                    borderColor: "#888", 
                   },
                   "&:hover fieldset": {
-                    borderColor: "#888", // Warna border ketika dihover
+                    borderColor: "#888", 
                   },
                   "&.Mui-focused fieldset": {
-                    borderColor: "#000", // Warna border ketika fokus
+                    borderColor: "#000", 
                   },
-                  color: "#000", // Warna teks input agar terlihat
+                  color: "#000", 
                 },
                 "& .MuiInputLabel-root": {
-                  color: "#000", // Warna label hitam agar terlihat
+                  color: "#000", 
                 },
               }}
               InputLabelProps={{
