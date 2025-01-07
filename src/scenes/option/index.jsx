@@ -63,7 +63,7 @@ const OptionData = () => {
       align: "center",
     },
     {
-      field: "OptionCategoryText",
+      field: "OptionText",
       headerName: "Category Text",
       flex: 1,
       headerAlign: "center",

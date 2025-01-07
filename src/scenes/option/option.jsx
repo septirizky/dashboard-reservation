@@ -22,7 +22,7 @@ const Option = () => {
   const [editingOption, setEditingOption] = useState(null);
 
   const [optionForm, setOptionForm] = useState({
-    OptionCategoryText: "",
+    OptionText: "",
     OptionCode: "",
     OptionName: "",
     op_id: "",
@@ -32,7 +32,7 @@ const Option = () => {
   const handleModalClose = () => {
     setOpenCreateModal(false);
     setOptionForm({
-      OptionCategoryText: "",
+      OptionText: "",
       OptionCode: "",
       OptionName: "",
       op_id: "",
@@ -66,7 +66,7 @@ const Option = () => {
     const formData = new FormData();
     formData.append("BranchCode", BranchCode);
     formData.append("BranchName", BranchName);
-    formData.append("OptionCategoryText", optionForm.OptionCategoryText);
+    formData.append("OptionText", optionForm.OptionText);
     formData.append("OptionCode", optionForm.OptionCode);
     formData.append("OptionName", optionForm.OptionName);
     formData.append("op_id", parseInt(optionForm.op_id));
@@ -89,7 +89,7 @@ const Option = () => {
   const handleEditClick = (option) => {
     setEditingOption(option);
     setOptionForm({
-      OptionCategoryText: option.OptionCategoryText,
+      OptionText: option.OptionText,
       OptionCode: option.OptionCode,
       OptionName: option.OptionName,
       op_id: option.op_id,
@@ -101,7 +101,7 @@ const Option = () => {
     const formData = new FormData();
     formData.append("BranchCode", BranchCode);
     formData.append("BranchName", BranchName);
-    formData.append("OptionCategoryText", optionForm.OptionCategoryText);
+    formData.append("OptionText", optionForm.OptionText);
     formData.append("OptionCode", optionForm.OptionCode);
     formData.append("OptionName", optionForm.OptionName);
     formData.append("op_id", parseInt(optionForm.op_id));
@@ -136,7 +136,7 @@ const Option = () => {
 
   const columns = [
     {
-      field: "OptionCategoryText",
+      field: "OptionText",
       headerName: "Category Text",
       flex: 1,
       headerAlign: "center",
@@ -270,8 +270,8 @@ const Option = () => {
             fullWidth
             margin="normal"
             label="Option Category Text"
-            name="OptionCategoryText"
-            value={optionForm.OptionCategoryText}
+            name="OptionText"
+            value={optionForm.OptionText}
             onChange={handleInputChange}
           />
           <TextField
@@ -339,8 +339,8 @@ const Option = () => {
             fullWidth
             margin="normal"
             label="Option Category Text"
-            name="OptionCategoryText"
-            value={optionForm.OptionCategoryText}
+            name="OptionText"
+            value={optionForm.OptionText}
             onChange={handleInputChange}
           />
           <TextField
