@@ -1,6 +1,21 @@
 import axios from "axios";
 import API from "../api/Api";
 
+export const createItemOption = async (formData) => {
+  try {
+    const token = localStorage.getItem("authToken");
+    const response = await axios.post(`${API}/item_option`, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error creating item option:", error);
+    throw error;
+  }
+};
+
 export const getItemOption = async (branchCode) => {
   try {
     const token = localStorage.getItem("authToken");
@@ -13,6 +28,41 @@ export const getItemOption = async (branchCode) => {
   } catch (error) {
     console.error("Error fetching item option:", error);
     return [];
+  }
+};
+
+export const updateItemOption = async (itemOptionId, formData) => {
+  try {
+    const token = localStorage.getItem("authToken");
+    const response = await axios.put(
+      `${API}/item_option/${itemOptionId}`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error updating item option:", error);
+    throw error;
+  }
+};
+
+export const deleteItemOption = async (itemOptionId) => {
+  try {
+    const token = localStorage.getItem("authToken");
+    const response = await axios.delete(`${API}/item_option/${itemOptionId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting item option:", error);
+    throw error;
   }
 };
 

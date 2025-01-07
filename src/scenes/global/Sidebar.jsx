@@ -207,6 +207,12 @@ const Sidebar = () => {
       icon: <CountertopsOutlinedIcon />,
       roles: ["GRO"],
     },
+    {
+      title: "Item Option",
+      to: "/item_option",
+      icon: <CountertopsOutlinedIcon />,
+      roles: ["GRO"],
+    },
     // {
     //   title: "Category Grist",
     //   to: "/category_grist",

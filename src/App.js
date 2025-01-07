@@ -41,6 +41,7 @@ import Branch from "./scenes/branch/branch";
 import Category from "./scenes/category/category";
 import Menu from "./scenes/menu/menu";
 import Option from "./scenes/option/option";
+import ItemOption from "./scenes/itemOption/itemOption";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -258,6 +259,14 @@ function App() {
                   element={
                     <ProtectedRoute allowedRoles={["GRO"]}>
                       <Option />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/item_option"
+                  element={
+                    <ProtectedRoute allowedRoles={["GRO"]}>
+                      <ItemOption />
                     </ProtectedRoute>
                   }
                 />
