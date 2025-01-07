@@ -3,7 +3,7 @@ import { Box, useTheme, Button } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
-import { getCategory, postAllCategories } from "../../data/categoryData";
+import { getCategoryGrist, postAllCategories } from "../../data/categoryData";
 
 const CategoryData = () => {
   const theme = useTheme();
@@ -16,7 +16,7 @@ const CategoryData = () => {
 
     const fetchCategory = async () => {
       try {
-        const categoryData = await getCategory(branchCodes);
+        const categoryData = await getCategoryGrist(branchCodes);
         setCategories(categoryData);
       } catch (error) {
         console.error("Error fetching categories:", error);
