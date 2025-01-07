@@ -30,15 +30,15 @@ const BranchQuota = () => {
   const branchCode =
     JSON.parse(localStorage.getItem("userData")).branchCode[0] || "";
 
-  const fetchQuotaAndGuestEvents = async () => {
+  const fetchQuotaAndPaxEvents = async () => {
     try {
       const fetchedQuota = await getAllBranchQuotas(branchCode);
       const reservations = await fetchReservationsByBranchCodes([branchCode]);
 
-      const guestData = reservations.reduce((acc, reservation) => {
+      const paxData = reservations.reduce((acc, reservation) => {
         if (reservation.status === "PAID") {
           const date = reservation.date;
-          acc[date] = (acc[date] || 0) + (reservation.guest || 0);
+          acc[date] = (acc[date] || 0) + (reservation.pax || 0);
         }
         return acc;
       }, {});
@@ -46,8 +46,8 @@ const BranchQuota = () => {
       const eventsData = [];
 
       fetchedQuota.forEach((item) => {
-        const totalGuests = guestData[item.date] || 0;
-        const remainingQuota = item.totalQuota - totalGuests;
+        const totalPaxs = paxData[item.date] || 0;
+        const remainingQuota = item.totalQuota - totalPaxs;
 
         eventsData.push({
           id: `${item.date}-quota`,
@@ -60,8 +60,8 @@ const BranchQuota = () => {
         });
 
         eventsData.push({
-          id: `${item.date}-guest`,
-          title: `Total Guest: ${totalGuests}`,
+          id: `${item.date}-pax`,
+          title: `Total Pax: ${totalPaxs}`,
           start: item.date,
           allDay: true,
           backgroundColor: "#00897B",
@@ -82,12 +82,12 @@ const BranchQuota = () => {
 
       setEvents(eventsData);
     } catch (error) {
-      console.error("Error fetching quota or guest data:", error);
+      console.error("Error fetching quota or pax data:", error);
     }
   };
 
   useEffect(() => {
-    fetchQuotaAndGuestEvents();
+    fetchQuotaAndPaxEvents();
   }, []);
 
   const handleEventClick = (info) => {
@@ -150,7 +150,7 @@ const BranchQuota = () => {
         autoClose: 2000,
       });
       setOpenModal(false);
-      fetchQuotaAndGuestEvents();
+      fetchQuotaAndPaxEvents();
     } catch (error) {
       console.error("Error saving quota data:", error);
       toast.error("Failed to save quota data.", { autoClose: 2000 });
