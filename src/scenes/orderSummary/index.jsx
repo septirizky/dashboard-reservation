@@ -469,7 +469,7 @@ const OrderSummary = () => {
       </Box>
       <Box
         m="40px 0 0 0"
-        height="75vh"
+        height="68vh"
         sx={{
           "& .MuiDataGrid-root": {
             border: "none",
@@ -514,7 +514,7 @@ const OrderSummary = () => {
         />
       </Box>
 
-      <Box
+      {/* <Box
         id="print-area"
         sx={{
           "& .MuiDataGrid-root": { border: "none" },
@@ -569,7 +569,7 @@ const OrderSummary = () => {
             ))}
           </tbody>
         </table>
-      </Box>
+      </Box> */}
     </Box>
   );
 };
