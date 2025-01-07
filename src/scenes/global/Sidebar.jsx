@@ -4,6 +4,7 @@ import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { Link, useLocation } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css";
 import { tokens } from "../../theme";
+import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
@@ -23,7 +24,9 @@ import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined
 // import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 // import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
 // import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutlined";
-import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
+import RestaurantMenuIcon from "@mui/icons-material/RestaurantMenu";
+import MenuBookIcon from "@mui/icons-material/MenuBook";
+import CountertopsOutlinedIcon from "@mui/icons-material/CountertopsOutlined";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -186,39 +189,69 @@ const Sidebar = () => {
       icon: <PermDataSettingIcon />,
       roles: ["IT"],
     },
+    {
+      title: "Category",
+      to: "/category",
+      icon: <RestaurantMenuIcon />,
+      roles: ["GRO"],
+    },
+    {
+      title: "Menu",
+      to: "/menu",
+      icon: <MenuBookIcon />,
+      roles: ["GRO"],
+    },
+    {
+      title: "Option",
+      to: "/option",
+      icon: <CountertopsOutlinedIcon />,
+      roles: ["GRO"],
+    },
     // {
-    //   title: "Category",
-    //   to: "/category",
+    //   title: "Category Grist",
+    //   to: "/category_grist",
     //   icon: <PermDataSettingIcon />,
     //   roles: ["GRO"],
     // },
     // {
-    //   title: "Menu",
-    //   to: "/menu",
+    //   title: "Menu Grist",
+    //   to: "/menu_grist",
     //   icon: <PermDataSettingIcon />,
     //   roles: ["GRO"],
     // },
     // {
-    //   title: "Option",
-    //   to: "/option",
+    //   title: "Add CategoryId di Menu",
+    //   to: "/add_categoryid",
     //   icon: <PermDataSettingIcon />,
     //   roles: ["GRO"],
     // },
     // {
-    //   title: "Item Option",
-    //   to: "/item_option",
+    //   title: "Option Grist",
+    //   to: "/option_grist",
     //   icon: <PermDataSettingIcon />,
     //   roles: ["GRO"],
     // },
     // {
-    //   title: "Option Package",
-    //   to: "/option_package",
+    //   title: "Item Option Grist",
+    //   to: "/item_option_grist",
     //   icon: <PermDataSettingIcon />,
     //   roles: ["GRO"],
     // },
     // {
-    //   title: "Item Package",
-    //   to: "/item_package",
+    //   title: "Add ID di Item Option",
+    //   to: "/add_id",
+    //   icon: <PermDataSettingIcon />,
+    //   roles: ["GRO"],
+    // },
+    // {
+    //   title: "Option Package Grist",
+    //   to: "/option_package_grist",
+    //   icon: <PermDataSettingIcon />,
+    //   roles: ["GRO"],
+    // },
+    // {
+    //   title: "Item Package Grist",
+    //   to: "/item_package_grist",
     //   icon: <PermDataSettingIcon />,
     //   roles: ["GRO"],
     // },
