@@ -30,12 +30,17 @@ import ConfigPrivasi from "./scenes/config/privasi";
 import Configuration from "./scenes/config/configuration";
 import BranchQuota from "./scenes/branch/branchQuota";
 import Branch from "./scenes/branch/branch";
-import CategoryData from "./scenes/category";
-import MenuData from "./scenes/menu";
-import OptionData from "./scenes/option";
-import ItemOptionData from "./scenes/itemOption";
-import OptionPackageData from "./scenes/optionPackage";
-import ItemPackageData from "./scenes/itemPackage";
+// import CategoryData from "./scenes/category";
+// import MenuData from "./scenes/menu";
+// import OptionData from "./scenes/option";
+// import ItemOptionData from "./scenes/itemOption";
+// import OptionPackageData from "./scenes/optionPackage";
+// import ItemPackageData from "./scenes/itemPackage";
+// import AddIDdiItemOption from "./scenes/itemOption/addID";
+// import AddCategoryid from "./scenes/menu/addCategoryid";
+import Category from "./scenes/category/category";
+import Menu from "./scenes/menu/menu";
+import Option from "./scenes/option/option";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -236,7 +241,7 @@ function App() {
                   path="/category"
                   element={
                     <ProtectedRoute allowedRoles={["GRO"]}>
-                      <CategoryData />
+                      <Category />
                     </ProtectedRoute>
                   }
                 />
@@ -244,7 +249,7 @@ function App() {
                   path="/menu"
                   element={
                     <ProtectedRoute allowedRoles={["GRO"]}>
-                      <MenuData />
+                      <Menu />
                     </ProtectedRoute>
                   }
                 />
@@ -252,12 +257,44 @@ function App() {
                   path="/option"
                   element={
                     <ProtectedRoute allowedRoles={["GRO"]}>
+                      <Option />
+                    </ProtectedRoute>
+                  }
+                />
+                {/* <Route
+                  path="/category_grist"
+                  element={
+                    <ProtectedRoute allowedRoles={["GRO"]}>
+                      <CategoryData />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/menu_grist"
+                  element={
+                    <ProtectedRoute allowedRoles={["GRO"]}>
+                      <MenuData />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/add_categoryid"
+                  element={
+                    <ProtectedRoute allowedRoles={["GRO"]}>
+                      <AddCategoryid />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/option_grist"
+                  element={
+                    <ProtectedRoute allowedRoles={["GRO"]}>
                       <OptionData />
                     </ProtectedRoute>
                   }
                 />
                 <Route
-                  path="/item_option"
+                  path="/item_option_grist"
                   element={
                     <ProtectedRoute allowedRoles={["GRO"]}>
                       <ItemOptionData />
@@ -265,7 +302,15 @@ function App() {
                   }
                 />
                 <Route
-                  path="/option_package"
+                  path="/add_id"
+                  element={
+                    <ProtectedRoute allowedRoles={["GRO"]}>
+                      <AddIDdiItemOption />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/option_package_grist"
                   element={
                     <ProtectedRoute allowedRoles={["GRO"]}>
                       <OptionPackageData />
@@ -273,13 +318,13 @@ function App() {
                   }
                 />
                 <Route
-                  path="/item_package"
+                  path="/item_package_grist"
                   element={
                     <ProtectedRoute allowedRoles={["GRO"]}>
                       <ItemPackageData />
                     </ProtectedRoute>
                   }
-                />
+                /> */}
                 <Route
                   path="/add-user"
                   element={
