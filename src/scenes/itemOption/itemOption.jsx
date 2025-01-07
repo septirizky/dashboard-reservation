@@ -42,14 +42,26 @@ const ItemOption = () => {
     selectedOptions: [],
   });
 
-  const handleModalOpen = () => setOpenCreateModal(true);
-  const handleModalClose = () => {
-    setOpenCreateModal(false);
+  const handleModalOpen = () => {
+    setOpenCreateModal(true);
     setItemOptionForm({
-      mode: "Category",
+      mode: "Menu",
       selectedItems: [],
       selectedOptions: [],
     });
+    setSearchMenu("");
+    setSearchOption("");
+  };
+
+  const handleModalClose = () => {
+    setOpenCreateModal(false);
+    setItemOptionForm({
+      mode: "Menu",
+      selectedItems: [],
+      selectedOptions: [],
+    });
+    setSearchMenu("");
+    setSearchOption("");
   };
 
   const fetchAll = async () => {
@@ -89,7 +101,11 @@ const ItemOption = () => {
     try {
       const selectedItemId = itemOptionForm.selectedItems[0];
       const existingOptions = itemOptions
-        .filter((option) => option.MenuId === selectedItemId)
+        .filter((option) =>
+          itemOptionForm.mode === "Category"
+            ? option.CategoryId === selectedItemId
+            : option.MenuId === selectedItemId
+        )
         .map((opt) => opt.OptionId);
 
       const optionsToAdd = itemOptionForm.selectedOptions.filter(
@@ -102,16 +118,24 @@ const ItemOption = () => {
 
       const dataToAdd = optionsToAdd.map((optionId) => {
         const option = options.find((opt) => opt.OptionId === optionId);
-        const item = menus.find((menu) => menu.MenuId === selectedItemId);
 
         return {
           BranchCode: BranchCode.toString(),
           BranchName: BranchName.toString(),
-          MenuId: item.MenuId,
-          MenuName: item.MenuName,
+          CategoryId: itemOptionForm.mode === "Category" ? selectedItemId : "",
+          CategoryName:
+            itemOptionForm.mode === "Category"
+              ? categories.find((cat) => cat.CategoryId === selectedItemId)
+                  ?.CategoryName
+              : "",
+          MenuId: itemOptionForm.mode === "Menu" ? selectedItemId : "",
+          MenuName:
+            itemOptionForm.mode === "Menu"
+              ? menus.find((menu) => menu.MenuId === selectedItemId)?.MenuName
+              : "",
           OptionId: option.OptionId,
           OptionName: option.OptionName,
-          OptionCategoryText: option.OptionCategoryText,
+          OptionText: option.OptionText,
           op_id: option.op_id,
           ItemOptionShow: true,
         };
@@ -124,7 +148,10 @@ const ItemOption = () => {
       if (optionsToDelete.length > 0) {
         for (const optionId of optionsToDelete) {
           const itemOptionId = itemOptions.find(
-            (opt) => opt.MenuId === selectedItemId && opt.OptionId === optionId
+            (opt) =>
+              (itemOptionForm.mode === "Category"
+                ? opt.CategoryId === selectedItemId
+                : opt.MenuId === selectedItemId) && opt.OptionId === optionId
           ).ItemOptionId;
 
           await deleteItemOption(itemOptionId);
