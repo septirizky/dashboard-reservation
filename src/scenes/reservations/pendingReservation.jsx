@@ -677,12 +677,12 @@ const PendingReservation = () => {
           <TextField
             fullWidth
             margin="normal"
-            label="reason"
+            label="Reason"
             name="reason"
             value={refundForm.reason}
             onChange={handleInputChange}
             multiline
-            rows={4} // Menjadikan textarea lebih luas
+            rows={4}
           />
 
           <Box mt={2} display="flex" justifyContent="flex-end">
