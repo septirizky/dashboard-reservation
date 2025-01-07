@@ -296,7 +296,7 @@ const ItemOption = () => {
     <Box m="20px">
       <Header title=" ITEM OPTION" subtitle="Managing the Item Option" />
       <Button variant="contained" color="secondary" onClick={handleModalOpen}>
-        Create New Item Option
+        Set Item Option
       </Button>
       <Box
         m="40px 0 0 0"
