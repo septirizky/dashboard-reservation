@@ -4,12 +4,15 @@ import API from "../api/Api";
 export const getItemPackage = async (branchCode) => {
   try {
     const token = localStorage.getItem("authToken");
-    const response = await axios.get(`${API}/item_package/${branchCode}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "ngrok-skip-browser-warning": "true",
-      },
-    });
+    const response = await axios.get(
+      `${API}/item_package_grist/${branchCode}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "ngrok-skip-browser-warning": "true",
+        },
+      }
+    );
     return response.data.data;
   } catch (error) {
     console.error("Error fetching item Package:", error);
