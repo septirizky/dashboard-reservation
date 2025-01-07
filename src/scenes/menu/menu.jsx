@@ -258,26 +258,6 @@ const Menu = () => {
       ),
     },
     {
-      field: "MenuPackageDetail",
-      headerName: "Package Detail",
-      flex: 0.8,
-      headerAlign: "center",
-      align: "center",
-      renderCell: (params) => (
-        <Switch
-          checked={params.row.MenuPackageDetail}
-          onChange={(e) =>
-            handleToggleChange(
-              params.row.MenuId,
-              "MenuPackageDetail",
-              e.target.checked
-            )
-          }
-          color={params.row.MenuPackageDetail ? "secondary" : "default"}
-        />
-      ),
-    },
-    {
       field: "MenuSoldOut",
       headerName: "SoldOut",
       flex: 0.8,
@@ -455,6 +435,7 @@ const Menu = () => {
           }}
         />
       </Box>
+
       <Modal open={openCreateModal} onClose={handleModalClose}>
         <Box
           sx={{
