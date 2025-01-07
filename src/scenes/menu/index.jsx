@@ -3,7 +3,7 @@ import { Box, useTheme, Button } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
-import { getMenu, postAllMenu } from "../../data/menuData";
+import { getMenuGrist, postAllMenu } from "../../data/menuData";
 
 const MenuData = () => {
   const theme = useTheme();
@@ -16,7 +16,7 @@ const MenuData = () => {
 
     const fetchMenu = async () => {
       try {
-        const menuData = await getMenu(branchCodes);
+        const menuData = await getMenuGrist(branchCodes);
         setMenus(menuData);
       } catch (error) {
         console.error("Error fetching menu:", error);
@@ -33,7 +33,7 @@ const MenuData = () => {
     }
 
     try {
-      const response = await postAllMenu(menus); // Langsung kirimkan array `menu`
+      const response = await postAllMenu(menus);
       console.log("Data successfully posted:", response);
       alert("Data successfully posted to backend!");
     } catch (error) {

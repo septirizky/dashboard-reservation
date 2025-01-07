@@ -3,7 +3,7 @@ import { Box, useTheme, Button } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
-import { getOption, postAllOption } from "../../data/optionData";
+import { getOptionGrist, postAllOption } from "../../data/optionData";
 
 const OptionData = () => {
   const theme = useTheme();
@@ -16,7 +16,7 @@ const OptionData = () => {
 
     const fetchOption = async () => {
       try {
-        const optionData = await getOption(branchCodes);
+        const optionData = await getOptionGrist(branchCodes);
         setOptions(optionData);
       } catch (error) {
         console.error("Error fetching option:", error);
@@ -63,19 +63,19 @@ const OptionData = () => {
       align: "center",
     },
     {
-      field: "OptionsCategoryText",
+      field: "OptionCategoryText",
       headerName: "Category Text",
       flex: 1,
       headerAlign: "center",
     },
     {
-      field: "OptionsCode",
+      field: "OptionCode",
       headerName: "Option Code",
       flex: 1,
       headerAlign: "center",
     },
     {
-      field: "OptionsName",
+      field: "OptionName",
       headerName: "Option Name",
       flex: 1,
       headerAlign: "center",
