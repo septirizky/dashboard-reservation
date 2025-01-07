@@ -3,7 +3,10 @@ import { Box, useTheme, Button } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
-import { getItemOption, postAllItemOption } from "../../data/itemOptionData";
+import {
+  getItemOptionGrist,
+  postAllItemOption,
+} from "../../data/itemOptionData";
 
 const ItemOptionData = () => {
   const theme = useTheme();
@@ -16,7 +19,7 @@ const ItemOptionData = () => {
 
     const fetchItemOption = async () => {
       try {
-        const itemOptionData = await getItemOption(branchCodes);
+        const itemOptionData = await getItemOptionGrist(branchCodes);
         setItemOptions(itemOptionData);
       } catch (error) {
         console.error("Error fetching option:", error);
