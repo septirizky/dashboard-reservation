@@ -42,13 +42,16 @@ import Category from "./scenes/category/category";
 import Menu from "./scenes/menu/menu";
 import Option from "./scenes/option/option";
 import ItemOption from "./scenes/itemOption/itemOption";
+import VerifyOTP from "./scenes/verify";
+import OptionPackage from "./scenes/optionPackage/optionPackage";
 
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
   const location = useLocation();
 
-  const isLoginPage = location.pathname === "/login";
+  const isLoginPage =
+    location.pathname === "/login" || location.pathname === "/verify-dashboard";
 
   return (
     <ColorModeContext.Provider value={colorMode}>
@@ -58,6 +61,7 @@ function App() {
           <div className="login-page">
             <Routes>
               <Route path="/login" element={<Login />} />
+              <Route path="/verify-dashboard" element={<VerifyOTP />} />
             </Routes>
           </div>
         ) : (
@@ -270,6 +274,22 @@ function App() {
                     </ProtectedRoute>
                   }
                 />
+                <Route
+                  path="/option_package"
+                  element={
+                    <ProtectedRoute allowedRoles={["GRO"]}>
+                      <OptionPackage />
+                    </ProtectedRoute>
+                  }
+                />
+                {/* <Route
+                  path="/item_option"
+                  element={
+                    <ProtectedRoute allowedRoles={["GRO"]}>
+                      <ItemOption />
+                    </ProtectedRoute>
+                  }
+                /> */}
                 {/* <Route
                   path="/category_grist"
                   element={
