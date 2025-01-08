@@ -35,6 +35,7 @@ const BranchQuota = () => {
       const fetchedQuota = await getAllBranchQuotas(branchCode);
       const reservations = await fetchReservationsByBranchCodes([branchCode]);
 
+      const today = new Date().toISOString().split("T")[0];
       const paxData = reservations.reduce((acc, reservation) => {
         if (reservation.status === "PAID") {
           const date = reservation.date;
@@ -49,35 +50,49 @@ const BranchQuota = () => {
         const totalPaxs = paxData[item.date] || 0;
         const remainingQuota = item.totalQuota - totalPaxs;
 
-        eventsData.push({
-          id: `${item.date}-quota`,
-          title: `Total Quota: ${item.totalQuota}`,
-          start: item.date,
-          allDay: true,
-          backgroundColor: "blue",
-          borderColor: "blue",
-          textColor: "white",
-        });
+        // Jika tanggal sudah lewat, hanya tampilkan event tertentu
+        if (item.date < today) {
+          eventsData.push({
+            id: `${item.date}-past-quota`,
+            title: `Total Pax: ${totalPaxs}`,
+            start: item.date,
+            allDay: true,
+            backgroundColor: "#d3d3d3", // Warna abu-abu
+            borderColor: "#a0a0a0",
+            textColor: "black",
+          });
+        } else {
+          // Event untuk tanggal yang belum lewat
+          eventsData.push({
+            id: `${item.date}-quota`,
+            title: `Total Quota: ${item.totalQuota}`,
+            start: item.date,
+            allDay: true,
+            backgroundColor: "blue",
+            borderColor: "blue",
+            textColor: "white",
+          });
 
-        eventsData.push({
-          id: `${item.date}-pax`,
-          title: `Total Pax: ${totalPaxs}`,
-          start: item.date,
-          allDay: true,
-          backgroundColor: "#00897B",
-          borderColor: "#004D40",
-          textColor: "white",
-        });
+          eventsData.push({
+            id: `${item.date}-pax`,
+            title: `Total Pax: ${totalPaxs}`,
+            start: item.date,
+            allDay: true,
+            backgroundColor: "#00897B",
+            borderColor: "#004D40",
+            textColor: "white",
+          });
 
-        eventsData.push({
-          id: `${item.date}-remaining`,
-          title: `Quota Sisa: ${remainingQuota}`,
-          start: item.date,
-          allDay: true,
-          backgroundColor: "red",
-          borderColor: "red",
-          textColor: "white",
-        });
+          eventsData.push({
+            id: `${item.date}-remaining`,
+            title: `Quota Sisa: ${remainingQuota}`,
+            start: item.date,
+            allDay: true,
+            backgroundColor: "red",
+            borderColor: "red",
+            textColor: "white",
+          });
+        }
       });
 
       setEvents(eventsData);
@@ -91,11 +106,8 @@ const BranchQuota = () => {
   }, []);
 
   const handleEventClick = (info) => {
-    // This ensures the modal opens regardless of where you click in the cell
-    const date = info.event.startStr; // Use the start date of the clicked event
+    const date = info.event.startStr;
     setSelectedDate(date);
-
-    // Fetch data for the modal
     handleDateClick({ dateStr: date });
   };
 
@@ -185,11 +197,21 @@ const BranchQuota = () => {
               right: "dayGridMonth",
             }}
             initialView="dayGridMonth"
-            editable={true}
-            selectable={true}
             events={events}
-            dateClick={handleDateClick}
-            eventClick={handleEventClick}
+            dateClick={(info) => {
+              const today = new Date().toISOString().split("T")[0];
+              if (info.dateStr < today) {
+                return;
+              }
+              handleDateClick(info);
+            }}
+            eventClick={(info) => {
+              const today = new Date().toISOString().split("T")[0];
+              if (info.event.startStr < today) {
+                return;
+              }
+              handleEventClick(info);
+            }}
           />
         </Box>
       </Box>
