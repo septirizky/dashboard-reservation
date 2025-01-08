@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
@@ -12,35 +12,36 @@ import {
 } from "@mui/material";
 import API from "../../api/Api";
 
-const Login = () => {
+const VerifyOTP = () => {
+  const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
-  const [phone, setPhone] = useState("");
   const [message, setMessage] = useState("");
-
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const token = localStorage.getItem("authToken");
-
-    if (token) {
-      navigate("/calendar");
-    }
-  }, [navigate]);
-
-  const handleLogin = async (e) => {
+  const handleVerify = async (e) => {
     e.preventDefault();
     setLoading(true);
     setMessage("");
 
     try {
-      const response = await axios.post(`${API}/user/login`, { phone });
+      const response = await axios.post(`${API}/user/verify-otp`, {
+        phone: localStorage.getItem("phone"),
+        otp,
+      });
 
-      if (response.data) {
-        localStorage.setItem("phone", phone);
-        navigate("/verify-dashboard");
+      // Cek apakah respons memiliki token
+      if (response.data.token) {
+        const { token, user } = response.data;
+
+        localStorage.setItem("authToken", token);
+        localStorage.setItem("userData", JSON.stringify(user));
+
+        navigate("/calendar");
+      } else {
+        setMessage("Invalid OTP. Please try again.");
       }
     } catch (error) {
-      setMessage(error.response?.data?.message || "Login failed.");
+      setMessage(error.response?.data?.message || "Failed to verify OTP.");
     } finally {
       setLoading(false);
     }
@@ -48,9 +49,10 @@ const Login = () => {
 
   return (
     <Box
-      className="login-page"
+      className="verify-otp-page"
       sx={{
-        minHeight: "100vh",
+        width: "100vw", // Full width
+        height: "100vh", // Full height
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -65,16 +67,16 @@ const Login = () => {
         sx={{ bgcolor: "white", p: 4, borderRadius: 2, boxShadow: 3 }}
       >
         <Typography variant="h4" align="center" gutterBottom>
-          GRO Login
+          Verify OTP
         </Typography>
-        <form onSubmit={handleLogin}>
+        <form onSubmit={handleVerify}>
           <Box mb={2}>
             <TextField
-              label="Masukan nomor telepon"
+              label="Enter OTP"
               variant="outlined"
               fullWidth
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
               required
               sx={{
                 backgroundColor: "#f9f9f9",
@@ -115,7 +117,7 @@ const Login = () => {
               loading && <CircularProgress size={20} color="inherit" />
             }
           >
-            {loading ? "Sending OTP..." : "Login"}
+            {loading ? "Verifying..." : "Verify OTP"}
           </Button>
         </form>
       </Container>
@@ -123,4 +125,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default VerifyOTP;
