@@ -27,13 +27,13 @@ const Topbar = () => {
 
   const handleProfile = () => {
     handleClose();
-    navigate("/profile"); // Navigasi ke halaman profil
+    navigate("/profile");
   };
 
   const handleLogout = () => {
     handleClose();
-    localStorage.removeItem("authToken"); // Menghapus token untuk logout
-    navigate("/login"); // Navigasi ke halaman login
+    localStorage.clear();
+    navigate("/login");
   };
 
   return (
