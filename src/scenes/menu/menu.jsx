@@ -8,6 +8,7 @@ import {
   Modal,
   Select,
   MenuItem,
+  Typography,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -42,6 +43,7 @@ const Menu = () => {
     Description: "",
     MenuPrice: "",
     MenusKind: "",
+    MenuPackage: false,
     MenusImage: null,
   });
 
@@ -136,6 +138,7 @@ const Menu = () => {
     formData.append("MenuPrice", menuForm.MenuPrice);
     formData.append("MenusKind", menuForm.MenusKind);
     formData.append("i_id", parseInt(menuForm.i_id));
+    formData.append("MenuPackage", menuForm.MenuPackage);
     formData.append("MenusImage", menuForm.MenusImage);
 
     try {
@@ -162,6 +165,7 @@ const Menu = () => {
       MenuName: menu.MenuName,
       Description: menu.Description,
       MenuPrice: menu.MenuPrice,
+      MenuPackage: menu.MenuPackage,
       MenusKind: menu.MenusKind,
     });
     setOpenEditModal(true);
@@ -179,6 +183,7 @@ const Menu = () => {
     formData.append("MenuPrice", menuForm.MenuPrice);
     formData.append("MenusKind", menuForm.MenusKind);
     formData.append("i_id", parseInt(menuForm.i_id));
+    formData.append("MenuPackage", menuForm.MenuPackage);
     if (menuForm.MenusImage) {
       formData.append("MenusImage", menuForm.MenusImage);
     }
@@ -467,31 +472,41 @@ const Menu = () => {
               </MenuItem>
             ))}
           </Select>
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Item ID Ravintola"
-            name="i_id"
-            type="number"
-            value={menuForm.i_id}
-            onChange={handleInputChange}
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Menus Code"
-            name="MenusCode"
-            value={menuForm.MenusCode}
-            onChange={handleInputChange}
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Menu Name"
-            name="MenuName"
-            value={menuForm.MenuName}
-            onChange={handleInputChange}
-          />
+          <Box display="flex" gap={2} marginTop={2}>
+            <TextField
+              fullWidth
+              label="Item ID Ravintola"
+              name="i_id"
+              type="number"
+              value={menuForm.i_id}
+              onChange={handleInputChange}
+            />
+            <TextField
+              fullWidth
+              label="Menus Code"
+              name="MenusCode"
+              value={menuForm.MenusCode}
+              onChange={handleInputChange}
+            />
+          </Box>
+          <Box display="flex" gap={2}>
+            <TextField
+              fullWidth
+              margin="normal"
+              label="Menu Name"
+              name="MenuName"
+              value={menuForm.MenuName}
+              onChange={handleInputChange}
+            />
+            <TextField
+              fullWidth
+              margin="normal"
+              label="Menu Price"
+              name="MenuPrice"
+              value={menuForm.MenuPrice}
+              onChange={handleInputChange}
+            />
+          </Box>
           <TextField
             fullWidth
             margin="normal"
@@ -502,29 +517,42 @@ const Menu = () => {
             multiline
             rows={4}
           />
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Menu Price"
-            name="MenuPrice"
-            value={menuForm.MenuPrice}
-            onChange={handleInputChange}
-            sx={{ marginBottom: 2 }}
-          />
-          <Select
-            fullWidth
-            value={menuForm.MenusKind}
-            name="MenusKind"
-            onChange={handleInputChange}
-            displayEmpty
+          <Box
+            display="flex"
+            alignItems="center"
+            gap={2}
+            marginTop={2}
+            marginBottom={1}
           >
-            <MenuItem value="" disabled>
-              Select Menu Kind
-            </MenuItem>
-            <MenuItem value="Food">Food</MenuItem>
-            <MenuItem value="Beverages">Beverages</MenuItem>
-            <MenuItem value="Other">Other</MenuItem>
-          </Select>
+            <Select
+              sx={{ flex: 2 }}
+              value={menuForm.MenusKind}
+              name="MenusKind"
+              onChange={handleInputChange}
+              displayEmpty
+            >
+              <MenuItem value="" disabled>
+                Select Menu Kind
+              </MenuItem>
+              <MenuItem value="Food">Food</MenuItem>
+              <MenuItem value="Beverages">Beverages</MenuItem>
+              <MenuItem value="Other">Other</MenuItem>
+            </Select>
+
+            <Box display="flex" alignItems="center" gap={3} sx={{ flex: 1 }}>
+              <Typography>Menu Package</Typography>
+              <Switch
+                checked={menuForm.MenuPackage}
+                onChange={(e) =>
+                  setMenuForm((prev) => ({
+                    ...prev,
+                    MenuPackage: e.target.checked,
+                  }))
+                }
+                color="secondary"
+              />
+            </Box>
+          </Box>
           <TextField
             fullWidth
             margin="normal"
@@ -572,7 +600,6 @@ const Menu = () => {
             name="CategoryName"
             onChange={handleInputChange}
             displayEmpty
-            sx={{ marginBottom: 2 }}
           >
             <MenuItem value="" disabled>
               Select Category
@@ -583,31 +610,41 @@ const Menu = () => {
               </MenuItem>
             ))}
           </Select>
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Item ID"
-            name="i_id"
-            type="number"
-            value={menuForm.i_id}
-            onChange={handleInputChange}
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Menus Code"
-            name="MenusCode"
-            value={menuForm.MenusCode}
-            onChange={handleInputChange}
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Menu Name"
-            name="MenuName"
-            value={menuForm.MenuName}
-            onChange={handleInputChange}
-          />
+          <Box display="flex" gap={2} marginTop={2}>
+            <TextField
+              fullWidth
+              label="Item ID Ravintola"
+              name="i_id"
+              type="number"
+              value={menuForm.i_id}
+              onChange={handleInputChange}
+            />
+            <TextField
+              fullWidth
+              label="Menus Code"
+              name="MenusCode"
+              value={menuForm.MenusCode}
+              onChange={handleInputChange}
+            />
+          </Box>
+          <Box display="flex" gap={2}>
+            <TextField
+              fullWidth
+              margin="normal"
+              label="Menu Name"
+              name="MenuName"
+              value={menuForm.MenuName}
+              onChange={handleInputChange}
+            />
+            <TextField
+              fullWidth
+              margin="normal"
+              label="Menu Price"
+              name="MenuPrice"
+              value={menuForm.MenuPrice}
+              onChange={handleInputChange}
+            />
+          </Box>
           <TextField
             fullWidth
             margin="normal"
@@ -618,29 +655,42 @@ const Menu = () => {
             multiline
             rows={4}
           />
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Menu Price"
-            name="MenuPrice"
-            value={menuForm.MenuPrice}
-            onChange={handleInputChange}
-          />
-          <Select
-            fullWidth
-            value={menuForm.MenusKind}
-            name="MenusKind"
-            onChange={handleInputChange}
-            displayEmpty
-            sx={{ marginBottom: 2 }}
+          <Box
+            display="flex"
+            alignItems="center"
+            gap={2}
+            marginTop={2}
+            marginBottom={1}
           >
-            <MenuItem value="" disabled>
-              Select Menu Kind
-            </MenuItem>
-            <MenuItem value="Food">Food</MenuItem>
-            <MenuItem value="Beverages">Beverages</MenuItem>
-            <MenuItem value="Other">Other</MenuItem>
-          </Select>
+            <Select
+              sx={{ flex: 2 }}
+              value={menuForm.MenusKind}
+              name="MenusKind"
+              onChange={handleInputChange}
+              displayEmpty
+            >
+              <MenuItem value="" disabled>
+                Select Menu Kind
+              </MenuItem>
+              <MenuItem value="Food">Food</MenuItem>
+              <MenuItem value="Beverages">Beverages</MenuItem>
+              <MenuItem value="Other">Other</MenuItem>
+            </Select>
+
+            <Box display="flex" alignItems="center" gap={3} sx={{ flex: 1 }}>
+              <Typography>Menu Package</Typography>
+              <Switch
+                checked={menuForm.MenuPackage}
+                onChange={(e) =>
+                  setMenuForm((prev) => ({
+                    ...prev,
+                    MenuPackage: e.target.checked,
+                  }))
+                }
+                color="secondary"
+              />
+            </Box>
+          </Box>
           <TextField
             fullWidth
             margin="normal"
