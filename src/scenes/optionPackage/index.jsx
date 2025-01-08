@@ -4,7 +4,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import {
-  getOptionPackage,
+  getOptionPackageGrist,
   postAllOptionPackage,
 } from "../../data/optionPackageData";
 
@@ -19,7 +19,7 @@ const OptionPackageData = () => {
 
     const fetchOption = async () => {
       try {
-        const optionPackageData = await getOptionPackage(branchCodes);
+        const optionPackageData = await getOptionPackageGrist(branchCodes);
         setOptionPackages(optionPackageData);
       } catch (error) {
         console.error("Error fetching option:", error);

@@ -321,7 +321,10 @@ const ItemOption = () => {
 
   return (
     <Box m="20px">
-      <Header title=" ITEM OPTION" subtitle="Managing the Item Option" />
+      <Header
+        title={`ITEM OPTION  ${BranchName}`}
+        subtitle="Managing the Item Option"
+      />
       <Button variant="contained" color="secondary" onClick={handleModalOpen}>
         Set Item Option
       </Button>
