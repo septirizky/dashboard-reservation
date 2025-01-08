@@ -213,6 +213,18 @@ const Sidebar = () => {
       icon: <CountertopsOutlinedIcon />,
       roles: ["GRO"],
     },
+    {
+      title: "Option Package",
+      to: "/option_package",
+      icon: <CountertopsOutlinedIcon />,
+      roles: ["GRO"],
+    },
+    {
+      title: "Item Package",
+      to: "/item_package",
+      icon: <CountertopsOutlinedIcon />,
+      roles: ["GRO"],
+    },
     // {
     //   title: "Category Grist",
     //   to: "/category_grist",
