@@ -8,7 +8,7 @@ export const getBranch = async (branchCode, date) => {
       params: { branchCode, date },
       headers: {
         Authorization: `Bearer ${token}`,
-        "ngrok-skip-browser-warning": "true",
+        "Content-Type": "multipart/form-data",
       },
     });
     return response.data.data;
@@ -18,19 +18,15 @@ export const getBranch = async (branchCode, date) => {
   }
 };
 
-export const updateBranchShow = async (branchId, branchShow) => {
+export const updateBranchShow = async (branchId, data) => {
   try {
     const token = localStorage.getItem("authToken");
-    const response = await axios.put(
-      `${API}/branch_show/${branchId}`,
-      { branchShow },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "ngrok-skip-browser-warning": "true",
-        },
-      }
-    );
+    const response = await axios.patch(`${API}/branch_show/${branchId}`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
     return response.data;
   } catch (error) {
     console.error("Error updating branchShow:", error);
@@ -38,13 +34,13 @@ export const updateBranchShow = async (branchId, branchShow) => {
   }
 };
 
-export const updateBranchData = async (branchId, updatedData) => {
+export const updateBranchData = async (branchId, formData) => {
   try {
     const token = localStorage.getItem("authToken");
-    const response = await axios.put(`${API}/branch/${branchId}`, updatedData, {
+    const response = await axios.put(`${API}/branch/${branchId}`, formData, {
       headers: {
         Authorization: `Bearer ${token}`,
-        "ngrok-skip-browser-warning": "true",
+        "Content-Type": "multipart/form-data",
       },
     });
     return response.data;
