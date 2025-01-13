@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
-import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
+import { ProSidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { Link, useLocation } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css";
 import { tokens } from "../../theme";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
+import SupervisorAccountOutlinedIcon from "@mui/icons-material/SupervisorAccountOutlined";
+import AccountBalanceOutlinedIcon from "@mui/icons-material/AccountBalanceOutlined";
+import Diversity3OutlinedIcon from "@mui/icons-material/Diversity3Outlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
 import FactCheckOutlinedIcon from "@mui/icons-material/FactCheckOutlined";
@@ -52,8 +55,8 @@ const Sidebar = () => {
   const location = useLocation();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState(location.pathname);
-
   const [user, setUser] = useState({ name: "", role: "", photo: "" });
+  const [isGroGroupOpen, setIsGroGroupOpen] = useState(false);
 
   // const userData = JSON.parse(localStorage.getItem("userData"));
   // const branchCode = userData?.branchCode[0];
@@ -79,152 +82,7 @@ const Sidebar = () => {
         "Head Accounting",
       ],
     },
-    {
-      title: "Manage Team",
-      to: "/team",
-      icon: <PeopleOutlinedIcon />,
-      roles: ["IT"],
-    },
-    {
-      title: "Branch",
-      to: "/branch",
-      icon: <ReceiptOutlinedIcon />,
-      roles: ["IT"],
-    },
-    {
-      title: "Reservation Summary",
-      to: "/calendar",
-      icon: <CalendarTodayOutlinedIcon />,
-      roles: ["IT", "GRO"],
-    },
-    {
-      title: "Customers",
-      to: "/customers",
-      icon: <ContactsOutlinedIcon />,
-      roles: [
-        "IT",
-        "Business Development",
-        "Manager Accounting",
-        "Assistant Manager Accounting",
-        "Head Accounting",
-        "GRO",
-      ],
-    },
-    {
-      title: "Pending Reservation",
-      to: "/pending_reservation",
-      icon: <AvTimerIcon />,
-      roles: ["IT", "GRO"],
-    },
-    {
-      title: "Confirmed Reservation",
-      to: "/confirmed_reservation",
-      icon: <FactCheckOutlinedIcon />,
-      roles: ["IT", "GRO"],
-    },
-    {
-      title: "Order Summary",
-      to: "/order_summary",
-      icon: <SummarizeOutlinedIcon />,
-      roles: ["IT", "GRO"],
-    },
-    {
-      title: "Request Refund",
-      to: "/request_refund",
-      icon: <ReceiptOutlinedIcon />,
-      roles: [
-        "IT",
-        "Business Development",
-        "Manager Accounting",
-        "Assistant Manager Accounting",
-        "Head Accounting",
-      ],
-    },
-    {
-      title: "List Refund",
-      to: "/list_refund",
-      icon: <RequestQuoteOutlinedIcon />,
-      roles: [
-        "IT",
-        "Business Development",
-        "Manager Accounting",
-        "Assistant Manager Accounting",
-        "Head Accounting",
-        "GRO",
-      ],
-    },
-    {
-      title: "Disbursement",
-      to: "/disbursement",
-      icon: <MonetizationOnIcon />,
-      roles: ["IT", "Manager Accounting"],
-    },
-    {
-      title: "Disbursement List",
-      to: "/disbursement_list",
-      icon: <PriceCheckIcon />,
-      roles: ["IT", "Manager Accounting"],
-    },
-    {
-      title: "Quota Branch",
-      to: "/branch_quota",
-      icon: <EditCalendarIcon />,
-      roles: ["IT", "GRO"],
-    },
-    {
-      title: "Served",
-      to: "/config_menu",
-      icon: <RoomServiceIcon />,
-      roles: ["IT"],
-    },
-    {
-      title: "Privacy Policy",
-      to: "/config_privasi",
-      icon: <PrivacyTipIcon />,
-      roles: ["IT"],
-    },
-    {
-      title: "Configurations",
-      to: "/configuration",
-      icon: <PermDataSettingIcon />,
-      roles: ["IT"],
-    },
-    {
-      title: "Category",
-      to: "/category",
-      icon: <RestaurantMenuIcon />,
-      roles: ["GRO"],
-    },
-    {
-      title: "Menu",
-      to: "/menu",
-      icon: <MenuBookIcon />,
-      roles: ["GRO"],
-    },
-    {
-      title: "Option",
-      to: "/option",
-      icon: <CountertopsOutlinedIcon />,
-      roles: ["GRO"],
-    },
-    {
-      title: "Item Option",
-      to: "/item_option",
-      icon: <CountertopsOutlinedIcon />,
-      roles: ["GRO"],
-    },
-    {
-      title: "Option Package",
-      to: "/option_package",
-      icon: <CountertopsOutlinedIcon />,
-      roles: ["GRO"],
-    },
-    {
-      title: "Item Package",
-      to: "/item_package",
-      icon: <CountertopsOutlinedIcon />,
-      roles: ["GRO"],
-    },
+
     // {
     //   title: "Category Grist",
     //   to: "/category_grist",
@@ -341,8 +199,187 @@ const Sidebar = () => {
     // },
   ];
 
-  // Filter menu berdasarkan role user
+  const adminItems = [
+    {
+      title: "Manage Team",
+      to: "/team",
+      icon: <PeopleOutlinedIcon />,
+      roles: ["IT"],
+    },
+    {
+      title: "Branch",
+      to: "/branch",
+      icon: <ReceiptOutlinedIcon />,
+      roles: ["IT"],
+    },
+    {
+      title: "Served",
+      to: "/config_menu",
+      icon: <RoomServiceIcon />,
+      roles: ["IT"],
+    },
+    {
+      title: "Privacy Policy",
+      to: "/config_privasi",
+      icon: <PrivacyTipIcon />,
+      roles: ["IT"],
+    },
+    {
+      title: "Configurations",
+      to: "/configuration",
+      icon: <PermDataSettingIcon />,
+      roles: ["IT"],
+    },
+  ];
+
+  const financeItems = [
+    {
+      title: "Request Refund",
+      to: "/request_refund",
+      icon: <ReceiptOutlinedIcon />,
+      roles: [
+        "IT",
+        "Business Development",
+        "Manager Accounting",
+        "Assistant Manager Accounting",
+        "Head Accounting",
+      ],
+    },
+    {
+      title: "Disbursement",
+      to: "/disbursement",
+      icon: <MonetizationOnIcon />,
+      roles: ["IT", "Manager Accounting"],
+    },
+    {
+      title: "Disbursement List",
+      to: "/disbursement_list",
+      icon: <PriceCheckIcon />,
+      roles: ["IT", "Manager Accounting"],
+    },
+    {
+      title: "List Refund",
+      to: "/list_refund",
+      icon: <RequestQuoteOutlinedIcon />,
+      roles: [
+        "IT",
+        "Business Development",
+        "Manager Accounting",
+        "Assistant Manager Accounting",
+        "Head Accounting",
+        "GRO",
+      ],
+    },
+  ];
+
+  const groItems = [
+    {
+      title: "Quota Branch",
+      to: "/branch_quota",
+      icon: <EditCalendarIcon />,
+      roles: ["IT", "GRO"],
+    },
+    {
+      title: "Customers",
+      to: "/customers",
+      icon: <ContactsOutlinedIcon />,
+      roles: [
+        "IT",
+        "Business Development",
+        "Manager Accounting",
+        "Assistant Manager Accounting",
+        "Head Accounting",
+        "GRO",
+      ],
+    },
+    {
+      title: "Reservation Summary",
+      to: "/calendar",
+      icon: <CalendarTodayOutlinedIcon />,
+      roles: ["IT", "GRO"],
+    },
+    {
+      title: "Pending Reservation",
+      to: "/pending_reservation",
+      icon: <AvTimerIcon />,
+      roles: ["IT", "GRO"],
+    },
+    {
+      title: "Confirmed Reservation",
+      to: "/confirmed_reservation",
+      icon: <FactCheckOutlinedIcon />,
+      roles: ["IT", "GRO"],
+    },
+    {
+      title: "Order Summary",
+      to: "/order_summary",
+      icon: <SummarizeOutlinedIcon />,
+      roles: ["IT", "GRO"],
+    },
+    {
+      title: "List Refund",
+      to: "/list_refund",
+      icon: <RequestQuoteOutlinedIcon />,
+      roles: [
+        "IT",
+        "Business Development",
+        "Manager Accounting",
+        "Assistant Manager Accounting",
+        "Head Accounting",
+        "GRO",
+      ],
+    },
+    {
+      title: "Category",
+      to: "/category",
+      icon: <RestaurantMenuIcon />,
+      roles: ["GRO"],
+    },
+    {
+      title: "Menu",
+      to: "/menu",
+      icon: <MenuBookIcon />,
+      roles: ["GRO"],
+    },
+    {
+      title: "Option",
+      to: "/option",
+      icon: <CountertopsOutlinedIcon />,
+      roles: ["GRO"],
+    },
+    {
+      title: "Item Option",
+      to: "/item_option",
+      icon: <CountertopsOutlinedIcon />,
+      roles: ["GRO"],
+    },
+    {
+      title: "Option Package",
+      to: "/option_package",
+      icon: <CountertopsOutlinedIcon />,
+      roles: ["GRO"],
+    },
+    {
+      title: "Item Package",
+      to: "/item_package",
+      icon: <CountertopsOutlinedIcon />,
+      roles: ["GRO"],
+    },
+  ];
+
   const filteredMenuItems = menuItems.filter((menu) =>
+    menu.roles.includes(user.role)
+  );
+
+  const filteredAdminItems = adminItems.filter((menu) =>
+    menu.roles.includes(user.role)
+  );
+
+  const filteredFinanceItems = financeItems.filter((menu) =>
+    menu.roles.includes(user.role)
+  );
+
+  const filteredGroItems = groItems.filter((menu) =>
     menu.roles.includes(user.role)
   );
 
@@ -368,6 +405,7 @@ const Sidebar = () => {
     >
       <ProSidebar collapsed={isCollapsed}>
         <Menu iconShape="square">
+          {/* Tombol Collapse Sidebar */}
           <MenuItem
             onClick={() => setIsCollapsed(!isCollapsed)}
             icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
@@ -393,6 +431,7 @@ const Sidebar = () => {
             )}
           </MenuItem>
 
+          {/* Informasi User */}
           {!isCollapsed && (
             <Box mb="25px">
               <Box display="flex" justifyContent="center" alignItems="center">
@@ -420,6 +459,7 @@ const Sidebar = () => {
             </Box>
           )}
 
+          {/* Menu Utama */}
           <Box paddingLeft={isCollapsed ? undefined : "10%"}>
             {filteredMenuItems.map((menu) => (
               <Item
@@ -431,6 +471,69 @@ const Sidebar = () => {
                 setSelected={setSelected}
               />
             ))}
+
+            {/* Menu Grup Admin */}
+            <SubMenu
+              title="Admin"
+              style={{ color: colors.grey[100] }}
+              icon={<SupervisorAccountOutlinedIcon />}
+              open={isGroGroupOpen}
+              onClick={() => setIsGroGroupOpen(!isGroGroupOpen)}
+            >
+              {isGroGroupOpen &&
+                filteredAdminItems.map((menu) => (
+                  <Item
+                    key={menu.to}
+                    title={menu.title}
+                    to={menu.to}
+                    icon={menu.icon}
+                    selected={selected}
+                    setSelected={setSelected}
+                  />
+                ))}
+            </SubMenu>
+
+            {/* Menu Grup Finance */}
+            <SubMenu
+              title="Finance"
+              style={{ color: colors.grey[100] }}
+              icon={<AccountBalanceOutlinedIcon />}
+              open={isGroGroupOpen}
+              onClick={() => setIsGroGroupOpen(!isGroGroupOpen)}
+            >
+              {isGroGroupOpen &&
+                filteredFinanceItems.map((menu) => (
+                  <Item
+                    key={menu.to}
+                    title={menu.title}
+                    to={menu.to}
+                    icon={menu.icon}
+                    selected={selected}
+                    setSelected={setSelected}
+                  />
+                ))}
+            </SubMenu>
+
+            {/* Menu Grup GRO */}
+            <SubMenu
+              title="GRO"
+              style={{ color: colors.grey[100] }}
+              icon={<Diversity3OutlinedIcon />}
+              open={isGroGroupOpen}
+              onClick={() => setIsGroGroupOpen(!isGroGroupOpen)}
+            >
+              {isGroGroupOpen &&
+                filteredGroItems.map((menu) => (
+                  <Item
+                    key={menu.to}
+                    title={menu.title}
+                    to={menu.to}
+                    icon={menu.icon}
+                    selected={selected}
+                    setSelected={setSelected}
+                  />
+                ))}
+            </SubMenu>
           </Box>
         </Menu>
       </ProSidebar>
