@@ -114,6 +114,7 @@ const Branch = () => {
       headerName: "Branch Name",
       flex: 1,
       headerAlign: "center",
+      align: "left",
     },
     {
       field: "branchCode",
@@ -127,18 +128,21 @@ const Branch = () => {
       headerName: "Address",
       flex: 3,
       headerAlign: "center",
+      align: "left",
     },
     {
       field: "branchPhone",
       headerName: "Phone",
       flex: 1,
       headerAlign: "center",
+      align: "left",
     },
     {
       field: "branchEmail",
       headerName: "Email",
       flex: 1,
       headerAlign: "center",
+      align: "left",
     },
     {
       field: "branchMinimumPurchaseFormmated",
