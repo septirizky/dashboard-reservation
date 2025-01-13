@@ -236,9 +236,6 @@ const Branch = () => {
             },
             "& .MuiDataGrid-cell": {
               borderBottom: "none",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
             },
             "& .MuiDataGrid-columnHeaders": {
               backgroundColor: colors.blueAccent[700],
