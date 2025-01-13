@@ -40,7 +40,10 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
       style={{
         color: colors.grey[100],
       }}
-      onClick={() => setSelected(to)}
+      onClick={(event) => {
+        event.stopPropagation();
+        setSelected(to);
+      }}
       icon={icon}
     >
       <Typography>{title}</Typography>
@@ -56,12 +59,11 @@ const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState(location.pathname);
   const [user, setUser] = useState({ name: "", role: "", photo: "" });
-  const [isAdminGroupOpen, setIsAdminGroupOpen] = useState(false);
-  const [isFinanceGroupOpen, setIsFinanceGroupOpen] = useState(false);
-  const [isGroGroupOpen, setIsGroGroupOpen] = useState(false);
-
-  // const userData = JSON.parse(localStorage.getItem("userData"));
-  // const branchCode = userData?.branchCode[0];
+  const [groupOpenState, setGroupOpenState] = useState({
+    admin: false,
+    finance: false,
+    gro: false,
+  });
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("userData"));
@@ -70,6 +72,13 @@ const Sidebar = () => {
     }
     setSelected(location.pathname);
   }, [location.pathname]);
+
+  const toggleGroupOpen = (group) => {
+    setGroupOpenState((prevState) => ({
+      ...prevState,
+      [group]: !prevState[group],
+    }));
+  };
 
   const menuItems = [
     {
@@ -407,7 +416,6 @@ const Sidebar = () => {
     >
       <ProSidebar collapsed={isCollapsed}>
         <Menu iconShape="square">
-          {/* Tombol Collapse Sidebar */}
           <MenuItem
             onClick={() => setIsCollapsed(!isCollapsed)}
             icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
@@ -433,7 +441,6 @@ const Sidebar = () => {
             )}
           </MenuItem>
 
-          {/* Informasi User */}
           {!isCollapsed && (
             <Box mb="25px">
               <Box display="flex" justifyContent="center" alignItems="center">
@@ -461,7 +468,6 @@ const Sidebar = () => {
             </Box>
           )}
 
-          {/* Menu Utama */}
           <Box paddingLeft={isCollapsed ? undefined : "10%"}>
             {filteredMenuItems.map((menu) => (
               <Item
@@ -474,67 +480,61 @@ const Sidebar = () => {
               />
             ))}
 
-            {/* Menu Grup Admin */}
             <SubMenu
               title="Admin"
               style={{ color: colors.grey[100] }}
               icon={<SupervisorAccountOutlinedIcon />}
-              open={isAdminGroupOpen}
-              onClick={() => setIsAdminGroupOpen(!isAdminGroupOpen)}
+              open={groupOpenState.admin}
+              onClick={() => toggleGroupOpen("admin")}
             >
-              {isAdminGroupOpen &&
-                filteredAdminItems.map((menu) => (
-                  <Item
-                    key={menu.to}
-                    title={menu.title}
-                    to={menu.to}
-                    icon={menu.icon}
-                    selected={selected}
-                    setSelected={setSelected}
-                  />
-                ))}
+              {filteredAdminItems.map((menu) => (
+                <Item
+                  key={menu.to}
+                  title={menu.title}
+                  to={menu.to}
+                  icon={menu.icon}
+                  selected={selected}
+                  setSelected={setSelected}
+                />
+              ))}
             </SubMenu>
 
-            {/* Menu Grup Finance */}
             <SubMenu
               title="Finance"
               style={{ color: colors.grey[100] }}
               icon={<AccountBalanceOutlinedIcon />}
-              open={isFinanceGroupOpen}
-              onClick={() => setIsFinanceGroupOpen(!isFinanceGroupOpen)}
+              open={groupOpenState.finance}
+              onClick={() => toggleGroupOpen("finance")}
             >
-              {isFinanceGroupOpen &&
-                filteredFinanceItems.map((menu) => (
-                  <Item
-                    key={menu.to}
-                    title={menu.title}
-                    to={menu.to}
-                    icon={menu.icon}
-                    selected={selected}
-                    setSelected={setSelected}
-                  />
-                ))}
+              {filteredFinanceItems.map((menu) => (
+                <Item
+                  key={menu.to}
+                  title={menu.title}
+                  to={menu.to}
+                  icon={menu.icon}
+                  selected={selected}
+                  setSelected={setSelected}
+                />
+              ))}
             </SubMenu>
 
-            {/* Menu Grup GRO */}
             <SubMenu
               title="GRO"
               style={{ color: colors.grey[100] }}
               icon={<Diversity3OutlinedIcon />}
-              open={isGroGroupOpen}
-              onClick={() => setIsGroGroupOpen(!isGroGroupOpen)}
+              open={groupOpenState.gro}
+              onClick={() => toggleGroupOpen("gro")}
             >
-              {isGroGroupOpen &&
-                filteredGroItems.map((menu) => (
-                  <Item
-                    key={menu.to}
-                    title={menu.title}
-                    to={menu.to}
-                    icon={menu.icon}
-                    selected={selected}
-                    setSelected={setSelected}
-                  />
-                ))}
+              {filteredGroItems.map((menu) => (
+                <Item
+                  key={menu.to}
+                  title={menu.title}
+                  to={menu.to}
+                  icon={menu.icon}
+                  selected={selected}
+                  setSelected={setSelected}
+                />
+              ))}
             </SubMenu>
           </Box>
         </Menu>
