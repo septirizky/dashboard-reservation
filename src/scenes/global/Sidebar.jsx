@@ -56,6 +56,8 @@ const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState(location.pathname);
   const [user, setUser] = useState({ name: "", role: "", photo: "" });
+  const [isAdminGroupOpen, setIsAdminGroupOpen] = useState(false);
+  const [isFinanceGroupOpen, setIsFinanceGroupOpen] = useState(false);
   const [isGroGroupOpen, setIsGroGroupOpen] = useState(false);
 
   // const userData = JSON.parse(localStorage.getItem("userData"));
@@ -477,10 +479,10 @@ const Sidebar = () => {
               title="Admin"
               style={{ color: colors.grey[100] }}
               icon={<SupervisorAccountOutlinedIcon />}
-              open={isGroGroupOpen}
-              onClick={() => setIsGroGroupOpen(!isGroGroupOpen)}
+              open={isAdminGroupOpen}
+              onClick={() => setIsAdminGroupOpen(!isAdminGroupOpen)}
             >
-              {isGroGroupOpen &&
+              {isAdminGroupOpen &&
                 filteredAdminItems.map((menu) => (
                   <Item
                     key={menu.to}
@@ -498,10 +500,10 @@ const Sidebar = () => {
               title="Finance"
               style={{ color: colors.grey[100] }}
               icon={<AccountBalanceOutlinedIcon />}
-              open={isGroGroupOpen}
-              onClick={() => setIsGroGroupOpen(!isGroGroupOpen)}
+              open={isFinanceGroupOpen}
+              onClick={() => setIsFinanceGroupOpen(!isFinanceGroupOpen)}
             >
-              {isGroGroupOpen &&
+              {isFinanceGroupOpen &&
                 filteredFinanceItems.map((menu) => (
                   <Item
                     key={menu.to}
