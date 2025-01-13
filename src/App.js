@@ -44,6 +44,7 @@ import Option from "./scenes/option/option";
 import ItemOption from "./scenes/itemOption/itemOption";
 import VerifyOTP from "./scenes/verify";
 import OptionPackage from "./scenes/optionPackage/optionPackage";
+import ItemPackage from "./scenes/itemPackage/itemPackage";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -282,14 +283,14 @@ function App() {
                     </ProtectedRoute>
                   }
                 />
-                {/* <Route
-                  path="/item_option"
+                <Route
+                  path="/item_package"
                   element={
                     <ProtectedRoute allowedRoles={["GRO"]}>
-                      <ItemOption />
+                      <ItemPackage />
                     </ProtectedRoute>
                   }
-                /> */}
+                />
                 {/* <Route
                   path="/category_grist"
                   element={

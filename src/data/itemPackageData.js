@@ -1,7 +1,76 @@
 import axios from "axios";
 import API from "../api/Api";
 
+export const createItemPackage = async (formData) => {
+  try {
+    const token = localStorage.getItem("authToken");
+    const response = await axios.post(`${API}/item_package`, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error creating item package:", error);
+    throw error;
+  }
+};
+
 export const getItemPackage = async (branchCode) => {
+  try {
+    const token = localStorage.getItem("authToken");
+    const response = await axios.get(`${API}/item_package/${branchCode}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data.data;
+  } catch (error) {
+    console.error("Error fetching item package:", error);
+    return [];
+  }
+};
+
+export const updateItemPackage = async (itemPackageId, formData) => {
+  try {
+    const token = localStorage.getItem("authToken");
+    const response = await axios.put(
+      `${API}/item_package/${itemPackageId}`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error updating item package:", error);
+    throw error;
+  }
+};
+
+export const deleteItemPackage = async (itemPackageId) => {
+  try {
+    const token = localStorage.getItem("authToken");
+    const response = await axios.delete(
+      `${API}/item_package/${itemPackageId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting item package:", error);
+    throw error;
+  }
+};
+
+export const getItemPackageGrist = async (branchCode) => {
   try {
     const token = localStorage.getItem("authToken");
     const response = await axios.get(
