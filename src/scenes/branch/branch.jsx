@@ -72,26 +72,26 @@ const Branch = () => {
   };
 
   const handleEditSubmit = async () => {
-  const formData = new FormData();
-  formData.append("branchPhone", menuForm.branchPhone);
-  formData.append("branchEmail", menuForm.branchEmail);
-  formData.append("branchAddress", menuForm.branchAddress);
-  formData.append("branchMinimumPurchase", menuForm.branchMinimumPurchase);
+    const formData = new FormData();
+    formData.append("branchPhone", menuForm.branchPhone);
+    formData.append("branchEmail", menuForm.branchEmail);
+    formData.append("branchAddress", menuForm.branchAddress);
+    formData.append("branchMinimumPurchase", menuForm.branchMinimumPurchase);
 
-  try {
-    await updateBranchData(editingMenu.branchId, formData);
-    setOpenEditModal(false);
-    toast.success("Branch updated successfully!");
-    fetchBranches();
-  } catch (error) {
-    console.error("Error updating branch:", error);
-    toast.error(
-      `Failed to update branch. Reason: ${
-        error.response?.data?.errorMessage || error.message
-      }`
-    );
-  }
-};
+    try {
+      await updateBranchData(editingMenu.branchId, formData);
+      setOpenEditModal(false);
+      toast.success("Branch updated successfully!");
+      fetchBranches();
+    } catch (error) {
+      console.error("Error updating branch:", error);
+      toast.error(
+        `Failed to update branch. Reason: ${
+          error.response?.data?.errorMessage || error.message
+        }`
+      );
+    }
+  };
 
   const handleToggleChange = async (id, field, value) => {
     setBranches((prevBranches) =>
@@ -280,6 +280,7 @@ const Branch = () => {
             name="branchPhone"
             value={menuForm.branchPhone}
             onChange={handleInputChange}
+            sx={{ mb: 2 }}
           />
           <TextField
             fullWidth
@@ -287,6 +288,7 @@ const Branch = () => {
             name="branchEmail"
             value={menuForm.branchEmail}
             onChange={handleInputChange}
+            sx={{ mb: 2 }}
           />
           <TextField
             fullWidth
@@ -294,6 +296,7 @@ const Branch = () => {
             name="branchAddress"
             value={menuForm.branchAddress}
             onChange={handleInputChange}
+            sx={{ mb: 2 }}
           />
           <TextField
             fullWidth
@@ -302,6 +305,7 @@ const Branch = () => {
             type="number"
             value={menuForm.branchMinimumPurchase}
             onChange={handleInputChange}
+            sx={{ mb: 2 }}
           />
           <Box mt={2} display="flex" justifyContent="flex-end">
             <Button
