@@ -35,11 +35,7 @@ const PendingReservation = () => {
     tableName: "",
     tableAreaName: "",
   });
-  const [refundForm, setRefundForm] = useState({
-    bankName: "",
-    accountNumber: "",
-    accountHolder: "",
-    phone: "",
+  const [cancelForm, setCancelForm] = useState({
     reason: "",
   });
   const location = useLocation();
@@ -81,11 +77,7 @@ const PendingReservation = () => {
 
   const handleCloseRefundModal = () => {
     setRefundModal(false);
-    setRefundForm({
-      bankName: "",
-      accountNumber: "",
-      accountHolder: "",
-      phone: "",
+    setCancelForm({
       reason: "",
     });
   };
@@ -200,23 +192,19 @@ const PendingReservation = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setRefundForm((prevForm) => ({ ...prevForm, [name]: value }));
+    setCancelForm((prevForm) => ({ ...prevForm, [name]: value }));
   };
 
   const handleRefundSubmit = async () => {
     try {
-      if (!refundForm.reason) {
+      if (!cancelForm.reason) {
         toast.error("Field 'reason' harus diisi!", { autoClose: 2000 });
         return;
       }
 
       const refundData = {
         reservationCode: selectedReservation.reservationCode,
-        bank_name: refundForm.bankName,
-        account_number: refundForm.accountNumber,
-        account_holder: refundForm.accountHolder,
-        phone: refundForm.phone || reservations.phone,
-        reason: refundForm.reason,
+        reason: cancelForm.reason,
         amount: selectedReservation.dp,
       };
 
@@ -642,44 +630,13 @@ const PendingReservation = () => {
           <Typography variant="h6" mb={2}>
             Refund Form
           </Typography>
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Bank Name"
-            name="bankName"
-            value={refundForm.bankName}
-            onChange={handleInputChange}
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Account Number"
-            name="accountNumber"
-            value={refundForm.accountNumber}
-            onChange={handleInputChange}
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Account Holder"
-            name="accountHolder"
-            value={refundForm.accountHolder}
-            onChange={handleInputChange}
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Phone"
-            name="phone"
-            value={refundForm.phone}
-            onChange={handleInputChange}
-          />
+
           <TextField
             fullWidth
             margin="normal"
             label="Reason"
             name="reason"
-            value={refundForm.reason}
+            value={cancelForm.reason}
             onChange={handleInputChange}
             multiline
             rows={4}

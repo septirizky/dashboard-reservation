@@ -21,11 +21,7 @@ const ConfirmedReservation = () => {
   const [openModal, setOpenModal] = useState(false);
   const [openRefundModal, setRefundModal] = useState(false);
   const [selectedReservation, setSelectedReservation] = useState(null);
-  const [refundForm, setRefundForm] = useState({
-    bankName: "",
-    accountNumber: "",
-    accountHolder: "",
-    phone: "",
+  const [cancelForm, setCancelForm] = useState({
     reason: "",
   });
   const location = useLocation();
@@ -54,11 +50,7 @@ const ConfirmedReservation = () => {
 
   const handleCloseRefundModal = () => {
     setRefundModal(false);
-    setRefundForm({
-      bankName: "",
-      accountNumber: "",
-      accountHolder: "",
-      phone: "",
+    setCancelForm({
       reason: "",
     });
   };
@@ -89,7 +81,6 @@ const ConfirmedReservation = () => {
         phone: reservation.customer?.phone || "",
         dp: reservation.dp || 0,
         dpFormatted: formatRupiah(reservation.dp || 0),
-        totalAmountFormatted: formatRupiah(reservation.totalAmount || 0),
       }));
 
       setReservations(transformedData || []);
@@ -121,23 +112,19 @@ const ConfirmedReservation = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setRefundForm((prevForm) => ({ ...prevForm, [name]: value }));
+    setCancelForm((prevForm) => ({ ...prevForm, [name]: value }));
   };
 
   const handleRefundSubmit = async () => {
     try {
-      if (!refundForm.reason) {
+      if (!cancelForm.reason) {
         toast.error("Field 'reason' harus diisi!", { autoClose: 2000 });
         return;
       }
 
       const refundData = {
         reservationCode: selectedReservation.reservationCode,
-        bank_name: refundForm.bankName || "", // Tidak wajib
-        account_number: refundForm.accountNumber || "", // Tidak wajib
-        account_holder: refundForm.accountHolder || "", // Tidak wajib
-        phone: refundForm.phone || reservations.phone || "", // Tidak wajib
-        reason: refundForm.reason, // Wajib
+        reason: cancelForm.reason,
         amount: selectedReservation.dp,
       };
 
@@ -508,7 +495,7 @@ const ConfirmedReservation = () => {
             <Button
               variant="contained"
               color="success"
-              onClick={handleSendWhatsApp} // Panggil fungsi
+              onClick={handleSendWhatsApp}
               sx={{ mt: 2 }}
             >
               WhatsApp
@@ -537,41 +524,9 @@ const ConfirmedReservation = () => {
           <TextField
             fullWidth
             margin="normal"
-            label="Bank Name"
-            name="bankName"
-            value={refundForm.bankName}
-            onChange={handleInputChange}
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Account Number"
-            name="accountNumber"
-            value={refundForm.accountNumber}
-            onChange={handleInputChange}
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Account Holder"
-            name="accountHolder"
-            value={refundForm.accountHolder}
-            onChange={handleInputChange}
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Phone"
-            name="phone"
-            value={refundForm.phone}
-            onChange={handleInputChange}
-          />
-          <TextField
-            fullWidth
-            margin="normal"
             label="Reason"
             name="reason"
-            value={refundForm.reason}
+            value={cancelForm.reason}
             onChange={handleInputChange}
             multiline
             rows={4}
