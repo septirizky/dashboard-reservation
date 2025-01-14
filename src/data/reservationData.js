@@ -12,7 +12,6 @@ export const fetchReservationsByBranchCodes = async (branchCodes) => {
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            "ngrok-skip-browser-warning": "true",
           },
         }
       );
@@ -37,7 +36,6 @@ export const updateReservation = async (reservationId, updatedData) => {
       {
         headers: {
           "Content-Type": "application/json",
-          "ngrok-skip-browser-warning": "true",
         },
       }
     );
@@ -58,7 +56,6 @@ export const fetchReservationCountByCustomerId = async (customerId) => {
     const response = await axios.get(`${API}/reservation_count/${customerId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
-        "ngrok-skip-browser-warning": "true",
       },
     });
 
@@ -81,12 +78,64 @@ export const fetchReservationSummary = async () => {
     const response = await axios.get(`${API}/reservation_summary`, {
       headers: {
         Authorization: `Bearer ${token}`,
-        "ngrok-skip-browser-warning": "true",
       },
     });
 
     if (response.data && response.data.data) {
-      return response.data.data; // Mengembalikan data summary dari backend
+      return response.data.data;
+    }
+    return [];
+  } catch (error) {
+    console.error("Error fetching reservation summary:", error);
+    return [];
+  }
+};
+
+export const fetchReservationDetails = async (reservationCodes) => {
+  try {
+    const token = localStorage.getItem("authToken");
+    const response = await axios.post(
+      `${API}/reservation_disbursed`,
+      {
+        reservationCodes,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (response.data && response.data.data) {
+      return response.data.data;
+    } else {
+      console.error("No data found in the response");
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching reservations by reservationCodes:", error);
+    return [];
+  }
+};
+
+export const fetchReservationSummaryPerDate = async (
+  branchCode,
+  month,
+  year
+) => {
+  try {
+    const token = localStorage.getItem("authToken");
+    const response = await axios.get(
+      `${API}/reservation_summary_per_date?branchCode=${branchCode}&month=${month}&year=${year}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.data && response.data.data) {
+      return response.data.data;
     }
     return [];
   } catch (error) {
