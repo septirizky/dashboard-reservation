@@ -19,8 +19,6 @@ import Unauthorized from "./scenes/unauthorized";
 import OrderSummary from "./scenes/orderSummary";
 import PendingReservation from "./scenes/reservations/pendingReservation";
 import ConfirmedReservation from "./scenes/reservations/confirmedReservation";
-import RequestRefunds from "./scenes/refund/requestRefund";
-import ListRefunds from "./scenes/refund/listRefund";
 import Disbursement from "./scenes/disbursement/disbursement";
 import DisbursementList from "./scenes/disbursement/disbursementList";
 import AddConfigPage from "./scenes/form/config";
@@ -45,6 +43,8 @@ import ItemOption from "./scenes/itemOption/itemOption";
 import VerifyOTP from "./scenes/verify";
 import OptionPackage from "./scenes/optionPackage/optionPackage";
 import ItemPackage from "./scenes/itemPackage/itemPackage";
+import Reporting from "./scenes/report";
+import ListCancel from "./scenes/cancel";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -162,7 +162,7 @@ function App() {
                     </ProtectedRoute>
                   }
                 />
-                <Route
+                {/* <Route
                   path="/request_refund"
                   element={
                     <ProtectedRoute
@@ -177,9 +177,9 @@ function App() {
                       <RequestRefunds />
                     </ProtectedRoute>
                   }
-                />
+                /> */}
                 <Route
-                  path="/list_refund"
+                  path="/list_cancel"
                   element={
                     <ProtectedRoute
                       allowedRoles={[
@@ -191,7 +191,7 @@ function App() {
                         "GRO",
                       ]}
                     >
-                      <ListRefunds />
+                      <ListCancel />
                     </ProtectedRoute>
                   }
                 />
@@ -208,6 +208,14 @@ function App() {
                   element={
                     <ProtectedRoute allowedRoles={["IT", "Manager Accounting"]}>
                       <DisbursementList />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/reporting"
+                  element={
+                    <ProtectedRoute allowedRoles={["IT", "Manager Accounting"]}>
+                      <Reporting />
                     </ProtectedRoute>
                   }
                 />

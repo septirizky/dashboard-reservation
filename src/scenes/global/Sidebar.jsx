@@ -244,18 +244,18 @@ const Sidebar = () => {
   ];
 
   const financeItems = [
-    {
-      title: "Request Refund",
-      to: "/request_refund",
-      icon: <ReceiptOutlinedIcon />,
-      roles: [
-        "IT",
-        "Business Development",
-        "Manager Accounting",
-        "Assistant Manager Accounting",
-        "Head Accounting",
-      ],
-    },
+    // {
+    //   title: "Request Refund",
+    //   to: "/request_refund",
+    //   icon: <ReceiptOutlinedIcon />,
+    //   roles: [
+    //     "IT",
+    //     "Business Development",
+    //     "Manager Accounting",
+    //     "Assistant Manager Accounting",
+    //     "Head Accounting",
+    //   ],
+    // },
     {
       title: "Disbursement",
       to: "/disbursement",
@@ -269,17 +269,10 @@ const Sidebar = () => {
       roles: ["IT", "Manager Accounting"],
     },
     {
-      title: "List Refund",
-      to: "/list_refund",
-      icon: <RequestQuoteOutlinedIcon />,
-      roles: [
-        "IT",
-        "Business Development",
-        "Manager Accounting",
-        "Assistant Manager Accounting",
-        "Head Accounting",
-        "GRO",
-      ],
+      title: "Reporting",
+      to: "/reporting",
+      icon: <ReceiptOutlinedIcon />,
+      roles: ["IT", "Manager Accounting"],
     },
   ];
 
@@ -328,8 +321,8 @@ const Sidebar = () => {
       roles: ["IT", "GRO"],
     },
     {
-      title: "List Refund",
-      to: "/list_refund",
+      title: "Cancellation List",
+      to: "/list_cancel",
       icon: <RequestQuoteOutlinedIcon />,
       roles: [
         "IT",
