@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { Box, Typography, Button, Modal, TextField } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
@@ -27,6 +28,14 @@ const Disbursement = () => {
     description: "",
   });
 
+  const formatRupiah = (number) =>
+    new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(number);
+
   const handleRowClick = async (row) => {
     setSelectedRow(row);
     const branchCode = row.branchCode;
@@ -40,7 +49,13 @@ const Disbursement = () => {
         const createdAt = new Date(reservation.createdAt);
         const cutoffDate = new Date();
         cutoffDate.setDate(cutoffDate.getDate() - 3);
-        return createdAt <= cutoffDate && reservation.isDisbursed === false;
+        return (
+          createdAt <= cutoffDate &&
+          reservation.isDisbursed === false &&
+          (reservation.status === "CANCELLED" ||
+            reservation.status === "PAID" ||
+            reservation.status === "COMPLETED")
+        );
       });
 
       setReservationDetails(filteredReservations || []);
@@ -63,7 +78,13 @@ const Disbursement = () => {
         const createdAt = new Date(reservation.createdAt);
         const cutoffDate = new Date();
         cutoffDate.setDate(cutoffDate.getDate() - 3);
-        return createdAt <= cutoffDate && reservation.isDisbursed === false;
+        return (
+          createdAt <= cutoffDate &&
+          reservation.isDisbursed === false &&
+          (reservation.status === "CANCELLED" ||
+            reservation.status === "PAID" ||
+            reservation.status === "COMPLETED")
+        );
       });
 
       setReservationDetails(filteredReservations || []);
@@ -105,14 +126,10 @@ const Disbursement = () => {
       const transformedData = data.map((reservation) => ({
         ...reservation,
 
-        amountBeforeMDRFormatted: new Intl.NumberFormat("id-ID", {
-          style: "currency",
-          currency: "IDR",
-        }).format(reservation.amountBeforeMDR || 0),
-        amountAfterMDRFormatted: new Intl.NumberFormat("id-ID", {
-          style: "currency",
-          currency: "IDR",
-        }).format(reservation.amountAfterMDR || 0),
+        amountBeforeMDRFormatted: formatRupiah(
+          reservation.amountBeforeMDR || 0
+        ),
+        amountAfterMDRFormatted: formatRupiah(reservation.amountAfterMDR || 0),
       }));
 
       setSummary(transformedData || []);
@@ -167,34 +184,38 @@ const Disbursement = () => {
 
   const columns = [
     {
-      field: "branchCode",
-      headerName: "Branch Code",
-      flex: 0.3,
-      headerAlign: "center",
-    },
-    {
       field: "branchName",
       headerName: "Branch Name",
       flex: 0.5,
       headerAlign: "center",
     },
     {
-      field: "totalReservations",
-      headerName: "Reservations",
+      field: "branchCode",
+      headerName: "Branch Code",
       flex: 0.3,
       headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "totalReservations",
+      headerName: "Total Reservations",
+      flex: 0.3,
+      headerAlign: "center",
+      align: "right",
     },
     {
       field: "amountBeforeMDRFormatted",
       headerName: "Amount Before MDR",
       flex: 0.4,
       headerAlign: "center",
+      align: "right",
     },
     {
       field: "amountAfterMDRFormatted",
       headerName: "Amount After MDR",
       flex: 0.4,
       headerAlign: "center",
+      align: "right",
     },
     {
       field: "action",
@@ -211,6 +232,44 @@ const Disbursement = () => {
           Disbursement
         </Button>
       ),
+    },
+  ];
+
+  const tableModal = [
+    {
+      field: "reservationCode",
+      headerName: "Reservation Code",
+      flex: 0.5,
+      headerAlign: "center",
+    },
+    {
+      field: "date",
+      headerName: "Date",
+      flex: 0.3,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "time",
+      headerName: "Time",
+      flex: 0.3,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "pax",
+      headerName: "Pax",
+      flex: 0.2,
+      headerAlign: "center",
+      align: "right",
+    },
+    {
+      field: "dp",
+      headerName: "Amount",
+      flex: 0.4,
+      headerAlign: "center",
+      align: "right",
+      renderCell: (params) => `Rp ${params.row.dp.toLocaleString()}`,
     },
   ];
 
@@ -272,6 +331,7 @@ const Disbursement = () => {
           }}
         />
       </Box>
+
       <Modal open={openModal} onClose={handleCloseModal}>
         <Box
           sx={{
@@ -291,25 +351,10 @@ const Disbursement = () => {
           <Box mt={2} sx={{ height: 400, width: "100%" }}>
             <DataGrid
               rows={reservationDetails}
-              columns={[
-                {
-                  field: "reservationCode",
-                  headerName: "Reservation Code",
-                  flex: 0.5,
-                },
-                { field: "date", headerName: "Date", flex: 0.3 },
-                { field: "time", headerName: "Time", flex: 0.3 },
-                { field: "guest", headerName: "Guest", flex: 0.2 },
-                {
-                  field: "totalAmount",
-                  headerName: "Amount",
-                  flex: 0.4,
-                  renderCell: (params) =>
-                    `Rp ${params.row.totalAmount.toLocaleString()}`,
-                },
-              ]}
+              columns={tableModal}
               getRowId={(row) => row.reservationCode}
               disableSelectionOnClick
+              hideFooter={true}
             />
           </Box>
           <Button
@@ -322,6 +367,7 @@ const Disbursement = () => {
           </Button>
         </Box>
       </Modal>
+
       <Modal open={openFormModal} onClose={handleCloseFormModal}>
         <Box
           sx={{
