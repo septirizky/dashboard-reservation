@@ -210,7 +210,7 @@ const OptionPackage = () => {
     },
     {
       field: "OptionPackageName",
-      headerName: "Category Label Name",
+      headerName: "Option Package Name",
       flex: 1,
       headerAlign: "center",
     },
