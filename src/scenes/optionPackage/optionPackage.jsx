@@ -36,7 +36,7 @@ const OptionPackage = () => {
 
   const [optionForm, setOptionForm] = useState({
     MenuPackageName: "",
-    CategoryLabelName: "",
+    OptionPackageName: "",
     MaxChoosen: "",
     MinChoosen: "",
     AutoInsert: false,
@@ -47,7 +47,7 @@ const OptionPackage = () => {
     setOpenCreateModal(false);
     setOptionForm({
       MenuPackageName: "",
-      CategoryLabelName: "",
+      OptionPackageName: "",
       MaxChoosen: "",
       MinChoosen: "",
       AutoInsert: false,
@@ -118,7 +118,7 @@ const OptionPackage = () => {
     formData.append("BranchCode", BranchCode);
     formData.append("BranchName", BranchName);
     formData.append("MenuPackageName", optionForm.MenuPackageName);
-    formData.append("CategoryLabelName", optionForm.CategoryLabelName);
+    formData.append("OptionPackageName", optionForm.OptionPackageName);
     formData.append("MaxChoosen", optionForm.MaxChoosen);
     formData.append("MinChoosen", optionForm.MinChoosen);
     formData.append("AutoInsert", optionForm.AutoInsert);
@@ -142,7 +142,7 @@ const OptionPackage = () => {
     setEditingOption(option);
     setOptionForm({
       MenuPackageName: option.MenuPackageName,
-      CategoryLabelName: option.CategoryLabelName,
+      OptionPackageName: option.OptionPackageName,
       MaxChoosen: option.MaxChoosen,
       MinChoosen: option.MinChoosen,
       AutoInsert: option.AutoInsert,
@@ -155,7 +155,7 @@ const OptionPackage = () => {
     formData.append("BranchCode", BranchCode);
     formData.append("BranchName", BranchName);
     formData.append("MenuPackageName", optionForm.MenuPackageName);
-    formData.append("CategoryLabelName", optionForm.CategoryLabelName);
+    formData.append("OptionPackageName", optionForm.OptionPackageName);
     formData.append("MaxChoosen", optionForm.MaxChoosen);
     formData.append("MinChoosen", optionForm.MinChoosen);
     formData.append("AutoInsert", optionForm.AutoInsert);
@@ -209,7 +209,7 @@ const OptionPackage = () => {
       headerAlign: "center",
     },
     {
-      field: "CategoryLabelName",
+      field: "OptionPackageName",
       headerName: "Category Label Name",
       flex: 1,
       headerAlign: "center",
@@ -370,8 +370,8 @@ const OptionPackage = () => {
             fullWidth
             margin="normal"
             label="Category Label Name"
-            name="CategoryLabelName"
-            value={optionForm.CategoryLabelName}
+            name="OptionPackageName"
+            value={optionForm.OptionPackageName}
             onChange={handleInputChange}
           />
           <TextField
@@ -459,8 +459,8 @@ const OptionPackage = () => {
             fullWidth
             margin="normal"
             label="Category Label Name"
-            name="CategoryLabelName"
-            value={optionForm.CategoryLabelName}
+            name="OptionPackageName"
+            value={optionForm.OptionPackageName}
             onChange={handleInputChange}
           />
           <TextField
