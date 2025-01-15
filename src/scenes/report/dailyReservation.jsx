@@ -6,33 +6,33 @@ import {
   InputLabel,
   FormControl,
   Button,
+  TextField,
 } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import { useTheme } from "@mui/material";
-import { fetchReservationSummaryPerDate } from "../../data/reservationData";
+import { fetchReservationDetailPerTime } from "../../data/reportData";
 import * as XLSX from "xlsx";
 // import jsPDF from "jspdf";
 // import "jspdf-autotable";
 
-const MonthlyReport = () => {
+const ReservationDailyReport = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  const [summaryData, setSummaryData] = useState([]);
+  const [detailsData, setDetailsData] = useState([]);
   const [branchCodes, setBranchCodes] = useState([]);
   const [selectedBranchCode, setSelectedBranchCode] = useState("");
-  const [selectedMonth, setSelectedMonth] = useState("01");
-  const [selectedYear, setSelectedYear] = useState(
-    new Date().getFullYear().toString()
-  );
-
-  const years = [
-    { value: "2024", label: "2024" },
-    { value: "2025", label: "2025" },
-    { value: "2026", label: "2026" },
-  ];
+  const [startDate, setStartDate] = useState(() => {
+    const currentYear = new Date().getFullYear();
+    return `${currentYear}-01-01`;
+  });
+  const [endDate, setEndDate] = useState(() => {
+    const today = new Date();
+    return today.toISOString().split("T")[0];
+  });
+  const [selectedTime, setSelectedTime] = useState("");
 
   const formatRupiah = (number) => {
     if (!number || isNaN(number)) return "Rp 0";
@@ -46,9 +46,22 @@ const MonthlyReport = () => {
       .replace("Rp", "Rp ");
   };
 
+  const timeOptions = [
+    "11:00",
+    "12:00",
+    "13:00",
+    "14:00",
+    "15:00",
+    "16:00",
+    "17:00",
+    "18:00",
+    "19:00",
+    "20:00",
+    "21:00",
+  ];
+
   useEffect(() => {
     const userDataRaw = localStorage.getItem("userData");
-
     const userData = userDataRaw ? JSON.parse(userDataRaw) : null;
 
     if (
@@ -72,112 +85,92 @@ const MonthlyReport = () => {
   }, []);
 
   useEffect(() => {
-    const fetchSummaryData = async () => {
-      if (!selectedBranchCode || !selectedMonth || !selectedYear) return;
+    const fetchDetails = async () => {
+      if (!selectedBranchCode || !startDate || !endDate) return;
 
       try {
-        const summaryData = await fetchReservationSummaryPerDate(
+        const details = await fetchReservationDetailPerTime(
           selectedBranchCode,
-          selectedMonth,
-          selectedYear
+          startDate,
+          endDate,
+          selectedTime
         );
-        setSummaryData(summaryData);
+        setDetailsData(details);
       } catch (error) {
-        console.error(
-          "Error fetching reservation summary per branchCode, month, and year:",
-          error
-        );
+        console.error("Error fetching reservation detail per time:", error);
       }
     };
 
-    fetchSummaryData();
-  }, [selectedBranchCode, selectedMonth, selectedYear]);
+    fetchDetails();
+  }, [selectedBranchCode, startDate, endDate, selectedTime]);
 
   const handleBranchChange = (event) => {
     setSelectedBranchCode(event.target.value);
   };
 
-  const handleMonthChange = (event) => {
-    setSelectedMonth(event.target.value);
-  };
-
   const exportToExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet(summaryData);
+    const worksheet = XLSX.utils.json_to_sheet(detailsData);
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "OrderSummary");
-    XLSX.writeFile(
-      workbook,
-      `OrderSummary_${selectedYear}_${selectedMonth}.xlsx`
-    );
+    XLSX.utils.book_append_sheet(workbook, worksheet, "DailyReport");
+    XLSX.writeFile(workbook, `DailyReport_${startDate}_to_${endDate}.xlsx`);
   };
 
-  // const exportToPDF = () => {
-  //   const doc = new jsPDF();
-  //   doc.text("Order Summary", 14, 10);
-  //   doc.autoTable({
-  //     startY: 20,
-  //     head: [
-  //       [
-  //         "Branch Name",
-  //         "Branch Code",
-  //         "Date",
-  //         "Total Reservations",
-  //         "Total Pax",
-  //         "Total Items",
-  //         "Total DP",
-  //         "Total Amount",
+  //   const exportToPDF = () => {
+  //     const doc = new jsPDF();
+  //     doc.text("Daily Report", 14, 10);
+  //     doc.autoTable({
+  //       startY: 20,
+  //       head: [
+  //         [
+  //           "Branch Name",
+  //           "Branch Code",
+  //           "Date",
+  //           "Time",
+  //           "Reservation Code",
+  //           "Customer Name",
+  //           "Phone",
+  //           "Pax",
+  //           "DP",
+  //           "Amount",
+  //         ],
   //       ],
-  //     ],
-  //     body: summaryData.map((row) => [
-  //       row.branchName,
-  //       row.branchCode,
-  //       row.date,
-  //       row.totalReservations,
-  //       row.totalPax,
-  //       row.totalItems,
-  //       formatRupiah(row.totalDP),
-  //       formatRupiah(row.totalAmount),
-  //     ]),
-  //   });
-  //   doc.save(`OrderSummary_${selectedYear}_${selectedMonth}.pdf`);
-  // };
+  //       body: detailsData.map((row) => [
+  //         row.branchName,
+  //         row.branchCode,
+  //         row.date,
+  //         row.time,
+  //         row.reservationCode,
+  //         row.name,
+  //         row.phone,
+  //         row.pax,
+  //         formatRupiah(row.totalDP),
+  //         formatRupiah(row.totalAmount),
+  //       ]),
+  //     });
+  //     doc.save(`DailyReport_${startDate}_to_${endDate}.pdf`);
+  //   };
 
   const viewInNewTab = () => {
     const newWindow = window.open();
-    newWindow.document.write("<h1>Order Summary</h1>");
+    newWindow.document.write("<h1>Daily Report</h1>");
     newWindow.document.write("<table border='1'>");
     newWindow.document.write(
-      "<tr><th>Branch Name</th><th>Branch Code</th><th>Date</th><th>Total Reservations</th><th>Total Pax</th><th>Total Items</th><th>Total DP</th><th>Total Amount</th></tr>"
+      "<tr><th>Branch Name</th><th>Branch Code</th><th>Date</th><th>Time</th><th>Reservation Code</th><th>Customer Name</th><th>Phone</th><th>Pax</th><th>DP</th><th>Amount</th></tr>"
     );
-    summaryData.forEach((row) => {
+    detailsData.forEach((row) => {
       newWindow.document.write(
         `<tr><td>${row.branchName}</td><td>${row.branchCode}</td><td>${
           row.date
-        }</td><td>${row.totalReservations}</td><td>${row.totalPax}</td><td>${
-          row.totalItems
-        }</td><td>${formatRupiah(row.totalDP)}</td><td>${formatRupiah(
-          row.totalAmount
-        )}</td></tr>`
+        }</td><td>${row.time}</td><td>${row.reservationCode}</td><td>${
+          row.name
+        }</td><td>${row.phone}</td><td>${row.pax}</td><td>${formatRupiah(
+          row.totalDP
+        )}</td><td>${formatRupiah(row.totalAmount)}</td></tr>`
       );
     });
     newWindow.document.write("</table>");
     newWindow.document.close();
   };
-
-  const months = [
-    { value: "01", label: "January" },
-    { value: "02", label: "February" },
-    { value: "03", label: "March" },
-    { value: "04", label: "April" },
-    { value: "05", label: "May" },
-    { value: "06", label: "June" },
-    { value: "07", label: "July" },
-    { value: "08", label: "August" },
-    { value: "09", label: "September" },
-    { value: "10", label: "October" },
-    { value: "11", label: "November" },
-    { value: "12", label: "December" },
-  ];
 
   const columns = [
     {
@@ -187,13 +180,6 @@ const MonthlyReport = () => {
       headerAlign: "center",
     },
     {
-      field: "branchCode",
-      headerName: "Branch Code",
-      flex: 0.5,
-      headerAlign: "center",
-      align: "center",
-    },
-    {
       field: "date",
       headerName: "Date",
       flex: 0.3,
@@ -201,29 +187,42 @@ const MonthlyReport = () => {
       align: "center",
     },
     {
-      field: "totalReservations",
-      headerName: "Total Reservations",
-      flex: 0.5,
+      field: "time",
+      headerName: "Time",
+      flex: 0.3,
       headerAlign: "center",
-      align: "right",
+      align: "center",
     },
     {
-      field: "totalPax",
-      headerName: "Total Pax",
+      field: "reservationCode",
+      headerName: "Reservation Code",
       flex: 0.5,
       headerAlign: "center",
-      align: "right",
+      align: "center",
     },
     {
-      field: "totalItems",
-      headerName: "Total Items",
+      field: "name",
+      headerName: "Customer Name",
       flex: 0.5,
+      headerAlign: "center",
+    },
+    {
+      field: "phone",
+      headerName: "Phone",
+      flex: 0.5,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "pax",
+      headerName: "Pax",
+      flex: 0.3,
       headerAlign: "center",
       align: "right",
     },
     {
       field: "totalDP",
-      headerName: "Total DP",
+      headerName: "DP",
       flex: 0.5,
       headerAlign: "center",
       align: "right",
@@ -231,7 +230,7 @@ const MonthlyReport = () => {
     },
     {
       field: "totalAmount",
-      headerName: "Total Amount",
+      headerName: "Amount",
       flex: 0.5,
       headerAlign: "center",
       align: "right",
@@ -242,8 +241,8 @@ const MonthlyReport = () => {
   return (
     <Box m="20px">
       <Header
-        title="REPORT SUMMARY PER BRANCH AND MONTH"
-        subtitle="Summary of Orders by Branch and Month"
+        title="RESERVATION DETAIL PER TIME"
+        subtitle="Detailed Reservation Data by Time"
       />
       <Box display="flex" alignItems="center" mb="20px" gap="20px">
         <FormControl sx={{ minWidth: 200 }}>
@@ -260,30 +259,31 @@ const MonthlyReport = () => {
             ))}
           </Select>
         </FormControl>
+        <TextField
+          type="date"
+          label="Start Date"
+          InputLabelProps={{ shrink: true }}
+          value={startDate}
+          onChange={(e) => setStartDate(e.target.value)}
+        />
+        <TextField
+          type="date"
+          label="End Date"
+          InputLabelProps={{ shrink: true }}
+          value={endDate}
+          onChange={(e) => setEndDate(e.target.value)}
+        />
         <FormControl sx={{ minWidth: 200 }}>
-          <InputLabel id="month-select-label">Select Month</InputLabel>
+          <InputLabel id="time-select-label">Select Time</InputLabel>
           <Select
-            labelId="month-select-label"
-            value={selectedMonth}
-            onChange={handleMonthChange}
+            labelId="time-select-label"
+            value={selectedTime}
+            onChange={(e) => setSelectedTime(e.target.value)}
           >
-            {months.map((month) => (
-              <MenuItem key={month.value} value={month.value}>
-                {month.label}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <FormControl sx={{ minWidth: 200 }}>
-          <InputLabel id="year-select-label">Select Year</InputLabel>
-          <Select
-            labelId="year-select-label"
-            value={selectedYear}
-            onChange={(e) => setSelectedYear(e.target.value)}
-          >
-            {years.map((year) => (
-              <MenuItem key={year.value} value={year.value}>
-                {year.label}
+            <MenuItem value="">All Times</MenuItem>
+            {timeOptions.map((time) => (
+              <MenuItem key={time} value={time}>
+                {time}
               </MenuItem>
             ))}
           </Select>
@@ -334,25 +334,12 @@ const MonthlyReport = () => {
             borderTop: "none",
             backgroundColor: colors.blueAccent[700],
           },
-          "& .MuiCheckbox-root": {
-            color: `${colors.greenAccent[200]} !important`,
-          },
-          "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-            color: `${colors.grey[100]} !important`,
-          },
-          "& .MuiDataGrid-columnHeaderTitle": {
-            display: "flex",
-            justifyContent: "center",
-            textAlign: "center",
-            fontSize: "0.9rem",
-            fontWeight: "bold",
-          },
         }}
       >
         <DataGrid
-          rows={summaryData || []}
+          rows={detailsData || []}
           columns={columns}
-          getRowId={(row) => `${row.branchCode}-${row.date}`}
+          getRowId={(row) => `${row.reservationCode}-${row.date}-${row.time}`}
           components={{ Toolbar: GridToolbar }}
         />
       </Box>
@@ -360,4 +347,4 @@ const MonthlyReport = () => {
   );
 };
 
-export default MonthlyReport;
+export default ReservationDailyReport;
