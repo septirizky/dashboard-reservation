@@ -269,15 +269,27 @@ const Sidebar = () => {
       roles: ["IT", "Manager Accounting"],
     },
     {
-      title: "Monthly Report",
-      to: "/monthly_report",
+      title: "Reservation Monthly Report",
+      to: "/reservation_monthly_report",
       icon: <ReceiptOutlinedIcon />,
       roles: ["IT", "Manager Accounting"],
     },
     {
-      title: "Daily Report",
-      to: "/daily_report",
+      title: "Reservation Daily Report",
+      to: "/reservation_daily_report",
       icon: <ReceiptOutlinedIcon />,
+      roles: ["IT", "Manager Accounting"],
+    },
+    {
+      title: "Payment Monthly Report",
+      to: "/payment_monthly_report",
+      icon: <ReceiptOutlinedIcon />,
+      roles: ["IT", "Manager Accounting"],
+    },
+    {
+      title: "Payment Daily Report",
+      to: "/payment_daily_report",
+      icon: <PriceCheckIcon />,
       roles: ["IT", "Manager Accounting"],
     },
   ];
