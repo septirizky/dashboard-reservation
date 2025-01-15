@@ -269,8 +269,14 @@ const Sidebar = () => {
       roles: ["IT", "Manager Accounting"],
     },
     {
-      title: "Reporting",
-      to: "/reporting",
+      title: "Monthly Report",
+      to: "/monthly_report",
+      icon: <ReceiptOutlinedIcon />,
+      roles: ["IT", "Manager Accounting"],
+    },
+    {
+      title: "Daily Report",
+      to: "/daily_report",
       icon: <ReceiptOutlinedIcon />,
       roles: ["IT", "Manager Accounting"],
     },

@@ -143,3 +143,31 @@ export const fetchReservationSummaryPerDate = async (
     return [];
   }
 };
+
+export const fetchReservationDetailPerTime = async (
+  selectedBranchCode,
+  selectedStartDate,
+  selectedEndDate
+) => {
+  try {
+    const token = localStorage.getItem("authToken");
+    const response = await axios.get(`${API}/reservation_detail_per_time`, {
+      params: {
+        branchCode: selectedBranchCode,
+        startDate: selectedStartDate,
+        endDate: selectedEndDate,
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.data && response.data.data) {
+      return response.data.data;
+    }
+    return [];
+  } catch (error) {
+    console.error("Error fetching reservation detail per time:", error);
+    return [];
+  }
+};
