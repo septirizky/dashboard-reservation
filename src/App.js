@@ -44,8 +44,10 @@ import VerifyOTP from "./scenes/verify";
 import OptionPackage from "./scenes/optionPackage/optionPackage";
 import ItemPackage from "./scenes/itemPackage/itemPackage";
 import ListCancel from "./scenes/cancel";
-import MonthlyReport from "./scenes/report/monthly";
-import DailyReport from "./scenes/report/daily";
+import ReservationMonthlyReport from "./scenes/report/monthlyReservation";
+import ReservationDailyReport from "./scenes/report/dailyReservation";
+import PaymentMonthlyReport from "./scenes/report/monthlyPayment";
+import PaymentDailyReport from "./scenes/report/dailyPayment";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -213,18 +215,34 @@ function App() {
                   }
                 />
                 <Route
-                  path="/monthly_report"
+                  path="/reservation_monthly_report"
                   element={
                     <ProtectedRoute allowedRoles={["IT", "Manager Accounting"]}>
-                      <MonthlyReport />
+                      <ReservationMonthlyReport />
                     </ProtectedRoute>
                   }
                 />
                 <Route
-                  path="/daily_report"
+                  path="/reservation_daily_report"
                   element={
                     <ProtectedRoute allowedRoles={["IT", "Manager Accounting"]}>
-                      <DailyReport />
+                      <ReservationDailyReport />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/payment_monthly_report"
+                  element={
+                    <ProtectedRoute allowedRoles={["IT", "Manager Accounting"]}>
+                      <PaymentMonthlyReport />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/payment_daily_report"
+                  element={
+                    <ProtectedRoute allowedRoles={["IT", "Manager Accounting"]}>
+                      <PaymentDailyReport />
                     </ProtectedRoute>
                   }
                 />
