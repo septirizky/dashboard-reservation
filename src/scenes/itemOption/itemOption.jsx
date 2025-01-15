@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import {
   Box,
   useTheme,
@@ -41,6 +42,8 @@ const ItemOption = () => {
     selectedItems: [],
     selectedOptions: [],
   });
+  const [filteredItemOption, setFilteredItemOption] = useState([]);
+  const [searchParams] = useSearchParams();
 
   const handleModalOpen = () => {
     setOpenCreateModal(true);
@@ -84,6 +87,24 @@ const ItemOption = () => {
       console.error("Error fetching option:", error);
     }
   };
+
+  useEffect(() => {
+    const searchQuery = searchParams.get("search") || "";
+    if (searchQuery) {
+      const filteredData = itemOptions.filter(
+        (itemOption) =>
+          itemOption.MenuName.toLowerCase().includes(
+            searchQuery.toLowerCase()
+          ) ||
+          itemOption.OptionName.toLowerCase().includes(
+            searchQuery.toLowerCase()
+          )
+      );
+      setFilteredItemOption(filteredData);
+    } else {
+      setFilteredItemOption(itemOptions);
+    }
+  }, [itemOptions, searchParams]);
 
   useEffect(() => {
     fetchAll();
@@ -360,7 +381,7 @@ const ItemOption = () => {
         }}
       >
         <DataGrid
-          rows={itemOptions}
+          rows={filteredItemOption}
           columns={columns}
           getRowId={(row) => row.ItemOptionId}
           disableSelectionOnClick

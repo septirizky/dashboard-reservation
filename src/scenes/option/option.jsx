@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Box, useTheme, Button, Modal, TextField } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -20,13 +21,14 @@ const Option = () => {
   const [openCreateModal, setOpenCreateModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [editingOption, setEditingOption] = useState(null);
-
   const [optionForm, setOptionForm] = useState({
     OptionText: "",
     OptionCode: "",
     OptionName: "",
     op_id: "",
   });
+  const [filteredOption, setFilteredOption] = useState([]);
+  const [searchParams] = useSearchParams();
 
   const handleModalOpen = () => setOpenCreateModal(true);
   const handleModalClose = () => {
@@ -49,6 +51,18 @@ const Option = () => {
       console.error("Error fetching option:", error);
     }
   };
+
+  useEffect(() => {
+    const searchQuery = searchParams.get("search") || "";
+    if (searchQuery) {
+      const filteredData = options.filter((option) =>
+        option.OptionName.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredOption(filteredData);
+    } else {
+      setFilteredOption(options);
+    }
+  }, [options, searchParams]);
 
   useEffect(() => {
     fetchOption();
@@ -235,7 +249,7 @@ const Option = () => {
         }}
       >
         <DataGrid
-          rows={options}
+          rows={filteredOption}
           columns={columns}
           getRowId={(row) => row.OptionId}
           disableSelectionOnClick

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import {
   Box,
   Button,
@@ -33,7 +34,6 @@ const Menu = () => {
   const [openCreateModal, setOpenCreateModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [editingMenu, setEditingMenu] = useState(null);
-
   const [menuForm, setMenuForm] = useState({
     CategoryId: "",
     CategoryName: "",
@@ -46,6 +46,8 @@ const Menu = () => {
     MenuPackage: false,
     MenusImage: null,
   });
+  const [filteredMenus, setFilteredMenus] = useState([]);
+  const [searchParams] = useSearchParams();
 
   const handleModalOpen = () => setOpenCreateModal(true);
   const handleModalClose = () => {
@@ -84,8 +86,32 @@ const Menu = () => {
   };
 
   useEffect(() => {
+    const searchQuery = searchParams.get("search") || "";
+    if (searchQuery) {
+      const filteredData = menus.filter((menu) =>
+        menu.MenuName.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredMenus(filteredData);
+    } else {
+      setFilteredMenus(menus);
+    }
+  }, [menus, searchParams]);
+
+  useEffect(() => {
     fetchMenuAndCategory();
   }, []);
+
+  const formatRupiah = (number) => {
+    if (!number || isNaN(number)) return "Rp 0";
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    })
+      .format(number)
+      .replace("Rp", "Rp ");
+  };
 
   const BranchName = JSON.parse(localStorage.getItem("userData")).branchName;
   const BranchCode = JSON.parse(localStorage.getItem("userData")).branchCode;
@@ -241,6 +267,7 @@ const Menu = () => {
       flex: 0.8,
       headerAlign: "center",
       align: "right",
+      renderCell: (params) => formatRupiah(params.value),
     },
     {
       field: "MenuPackage",
@@ -403,41 +430,11 @@ const Menu = () => {
         }}
       >
         <DataGrid
-          rows={menus}
+          rows={filteredMenus}
           columns={columns}
           getRowId={(row) => row.MenuId}
           disableSelectionOnClick
           rowHeight={120}
-          sx={{
-            "& .MuiDataGrid-root": {
-              border: "none",
-            },
-            "& .MuiDataGrid-cell": {
-              borderBottom: "none",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            },
-            "& .MuiDataGrid-columnHeaders": {
-              backgroundColor: colors.blueAccent[700],
-              borderBottom: "none",
-            },
-            "& .MuiDataGrid-virtualScroller": {
-              backgroundColor: colors.primary[400],
-            },
-            "& .MuiDataGrid-footerContainer": {
-              borderTop: "none",
-              backgroundColor: colors.blueAccent[700],
-            },
-            "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-              color: `${colors.grey[100]} !important`,
-            },
-            "& .MuiDataGrid-columnHeaderTitle": {
-              display: "flex",
-              fontSize: "0.9rem",
-              fontWeight: "bold",
-            },
-          }}
         />
       </Box>
 

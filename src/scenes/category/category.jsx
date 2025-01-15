@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Box, Button, Modal, TextField, useTheme } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -20,11 +21,12 @@ const Category = () => {
   const [openCreateModal, setOpenCreateModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
-
   const [categoryForm, setCategoryForm] = useState({
     CategoryName: "",
     CategoryImage: null,
   });
+  const [filteredCategory, setFilteredCategory] = useState([]);
+  const [searchParams] = useSearchParams();
 
   const handleModalOpen = () => setOpenCreateModal(true);
   const handleModalClose = () => {
@@ -45,6 +47,18 @@ const Category = () => {
       console.error("Error fetching categories:", error);
     }
   };
+
+  useEffect(() => {
+    const searchQuery = searchParams.get("search") || "";
+    if (searchQuery) {
+      const filteredData = categories.filter((category) =>
+        category.CategoryName.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredCategory(filteredData);
+    } else {
+      setFilteredCategory(categories);
+    }
+  }, [categories, searchParams]);
 
   useEffect(() => {
     fetchCategory();
@@ -250,41 +264,11 @@ const Category = () => {
         }}
       >
         <DataGrid
-          rows={categories}
+          rows={filteredCategory}
           columns={columns}
           getRowId={(row) => row.CategoryId}
           disableSelectionOnClick
           rowHeight={120}
-          sx={{
-            "& .MuiDataGrid-root": {
-              border: "none",
-            },
-            "& .MuiDataGrid-cell": {
-              borderBottom: "none",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            },
-            "& .MuiDataGrid-columnHeaders": {
-              backgroundColor: colors.blueAccent[700],
-              borderBottom: "none",
-            },
-            "& .MuiDataGrid-virtualScroller": {
-              backgroundColor: colors.primary[400],
-            },
-            "& .MuiDataGrid-footerContainer": {
-              borderTop: "none",
-              backgroundColor: colors.blueAccent[700],
-            },
-            "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-              color: `${colors.grey[100]} !important`,
-            },
-            "& .MuiDataGrid-columnHeaderTitle": {
-              display: "flex",
-              fontSize: "0.9rem",
-              fontWeight: "bold",
-            },
-          }}
         />
       </Box>
       <Modal open={openCreateModal} onClose={handleModalClose}>
