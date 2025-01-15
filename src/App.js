@@ -43,8 +43,9 @@ import ItemOption from "./scenes/itemOption/itemOption";
 import VerifyOTP from "./scenes/verify";
 import OptionPackage from "./scenes/optionPackage/optionPackage";
 import ItemPackage from "./scenes/itemPackage/itemPackage";
-import Reporting from "./scenes/report";
 import ListCancel from "./scenes/cancel";
+import MonthlyReport from "./scenes/report/monthly";
+import DailyReport from "./scenes/report/daily";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -212,10 +213,18 @@ function App() {
                   }
                 />
                 <Route
-                  path="/reporting"
+                  path="/monthly_report"
                   element={
                     <ProtectedRoute allowedRoles={["IT", "Manager Accounting"]}>
-                      <Reporting />
+                      <MonthlyReport />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/daily_report"
+                  element={
+                    <ProtectedRoute allowedRoles={["IT", "Manager Accounting"]}>
+                      <DailyReport />
                     </ProtectedRoute>
                   }
                 />
