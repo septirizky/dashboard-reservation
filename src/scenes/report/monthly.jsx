@@ -1,12 +1,22 @@
-import { useEffect, useState } from "react";
-import { Box, MenuItem, Select, InputLabel, FormControl } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import {
+  Box,
+  MenuItem,
+  Select,
+  InputLabel,
+  FormControl,
+  Button,
+} from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import { useTheme } from "@mui/material";
 import { fetchReservationSummaryPerDate } from "../../data/reservationData";
+import * as XLSX from "xlsx";
+// import jsPDF from "jspdf";
+// import "jspdf-autotable";
 
-const Reporting = () => {
+const MonthlyReport = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -91,6 +101,69 @@ const Reporting = () => {
     setSelectedMonth(event.target.value);
   };
 
+  const exportToExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(summaryData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "OrderSummary");
+    XLSX.writeFile(
+      workbook,
+      `OrderSummary_${selectedYear}_${selectedMonth}.xlsx`
+    );
+  };
+
+  // const exportToPDF = () => {
+  //   const doc = new jsPDF();
+  //   doc.text("Order Summary", 14, 10);
+  //   doc.autoTable({
+  //     startY: 20,
+  //     head: [
+  //       [
+  //         "Branch Name",
+  //         "Branch Code",
+  //         "Date",
+  //         "Total Reservations",
+  //         "Total Pax",
+  //         "Total Items",
+  //         "Total DP",
+  //         "Total Amount",
+  //       ],
+  //     ],
+  //     body: summaryData.map((row) => [
+  //       row.branchName,
+  //       row.branchCode,
+  //       row.date,
+  //       row.totalReservations,
+  //       row.totalPax,
+  //       row.totalItems,
+  //       formatRupiah(row.totalDP),
+  //       formatRupiah(row.totalAmount),
+  //     ]),
+  //   });
+  //   doc.save(`OrderSummary_${selectedYear}_${selectedMonth}.pdf`);
+  // };
+
+  const viewInNewTab = () => {
+    const newWindow = window.open();
+    newWindow.document.write("<h1>Order Summary</h1>");
+    newWindow.document.write("<table border='1'>");
+    newWindow.document.write(
+      "<tr><th>Branch Name</th><th>Branch Code</th><th>Date</th><th>Total Reservations</th><th>Total Pax</th><th>Total Items</th><th>Total DP</th><th>Total Amount</th></tr>"
+    );
+    summaryData.forEach((row) => {
+      newWindow.document.write(
+        `<tr><td>${row.branchName}</td><td>${row.branchCode}</td><td>${
+          row.date
+        }</td><td>${row.totalReservations}</td><td>${row.totalPax}</td><td>${
+          row.totalItems
+        }</td><td>${formatRupiah(row.totalDP)}</td><td>${formatRupiah(
+          row.totalAmount
+        )}</td></tr>`
+      );
+    });
+    newWindow.document.write("</table>");
+    newWindow.document.close();
+  };
+
   const months = [
     { value: "01", label: "January" },
     { value: "02", label: "February" },
@@ -169,7 +242,7 @@ const Reporting = () => {
   return (
     <Box m="20px">
       <Header
-        title="ORDER SUMMARY"
+        title="REPORT SUMMARY PER BRANCH AND MONTH"
         subtitle="Summary of Orders by Branch and Month"
       />
       <Box display="flex" alignItems="center" mb="20px" gap="20px">
@@ -215,6 +288,27 @@ const Reporting = () => {
             ))}
           </Select>
         </FormControl>
+        <Box ml="auto">
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={exportToExcel}
+            sx={{ marginRight: "10px" }}
+          >
+            Export to Excel
+          </Button>
+          {/* <Button
+            variant="contained"
+            color="secondary"
+            onClick={exportToPDF}
+            sx={{ marginRight: "10px" }}
+          >
+            Export to PDF
+          </Button> */}
+          <Button variant="contained" color="info" onClick={viewInNewTab}>
+            View in New Tab
+          </Button>
+        </Box>
       </Box>
       <Box
         m="40px 0 0 0"
@@ -266,4 +360,4 @@ const Reporting = () => {
   );
 };
 
-export default Reporting;
+export default MonthlyReport;
