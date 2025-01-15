@@ -147,7 +147,8 @@ export const fetchReservationSummaryPerDate = async (
 export const fetchReservationDetailPerTime = async (
   selectedBranchCode,
   selectedStartDate,
-  selectedEndDate
+  selectedEndDate,
+  selectedTime
 ) => {
   try {
     const token = localStorage.getItem("authToken");
@@ -156,6 +157,7 @@ export const fetchReservationDetailPerTime = async (
         branchCode: selectedBranchCode,
         startDate: selectedStartDate,
         endDate: selectedEndDate,
+        time: selectedTime, 
       },
       headers: {
         Authorization: `Bearer ${token}`,

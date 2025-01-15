@@ -32,6 +32,7 @@ const DailyReport = () => {
     const today = new Date();
     return today.toISOString().split("T")[0];
   });
+  const [selectedTime, setSelectedTime] = useState("");
 
   const formatRupiah = (number) => {
     if (!number || isNaN(number)) return "Rp 0";
@@ -44,6 +45,20 @@ const DailyReport = () => {
       .format(number)
       .replace("Rp", "Rp ");
   };
+
+  const timeOptions = [
+    "11:00",
+    "12:00",
+    "13:00",
+    "14:00",
+    "15:00",
+    "16:00",
+    "17:00",
+    "18:00",
+    "19:00",
+    "20:00",
+    "21:00",
+  ];
 
   useEffect(() => {
     const userDataRaw = localStorage.getItem("userData");
@@ -78,7 +93,8 @@ const DailyReport = () => {
         const details = await fetchReservationDetailPerTime(
           selectedBranchCode,
           startDate,
-          endDate
+          endDate,
+          selectedTime
         );
         setDetailsData(details);
       } catch (error) {
@@ -87,7 +103,7 @@ const DailyReport = () => {
     };
 
     fetchDetails();
-  }, [selectedBranchCode, startDate, endDate]);
+  }, [selectedBranchCode, startDate, endDate, selectedTime]);
 
   const handleBranchChange = (event) => {
     setSelectedBranchCode(event.target.value);
@@ -265,6 +281,21 @@ const DailyReport = () => {
           value={endDate}
           onChange={(e) => setEndDate(e.target.value)}
         />
+        <FormControl sx={{ minWidth: 200 }}>
+          <InputLabel id="time-select-label">Select Time</InputLabel>
+          <Select
+            labelId="time-select-label"
+            value={selectedTime}
+            onChange={(e) => setSelectedTime(e.target.value)}
+          >
+            <MenuItem value="">All Times</MenuItem>
+            {timeOptions.map((time) => (
+              <MenuItem key={time} value={time}>
+                {time}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
         <Box ml="auto">
           <Button
             variant="contained"
