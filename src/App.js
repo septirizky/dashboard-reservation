@@ -48,6 +48,7 @@ import ReservationMonthlyReport from "./scenes/report/monthlyReservation";
 import ReservationDailyReport from "./scenes/report/dailyReservation";
 import PaymentMonthlyReport from "./scenes/report/monthlyPayment";
 import PaymentDailyReport from "./scenes/report/dailyPayment";
+import ItemMenuReport from "./scenes/report/itemMenu";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -243,6 +244,14 @@ function App() {
                   element={
                     <ProtectedRoute allowedRoles={["IT", "Manager Accounting"]}>
                       <PaymentDailyReport />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/item_menu_report"
+                  element={
+                    <ProtectedRoute allowedRoles={["IT", "Manager Accounting"]}>
+                      <ItemMenuReport />
                     </ProtectedRoute>
                   }
                 />

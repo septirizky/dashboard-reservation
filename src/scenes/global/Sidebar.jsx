@@ -292,6 +292,12 @@ const Sidebar = () => {
       icon: <PriceCheckIcon />,
       roles: ["IT", "Manager Accounting"],
     },
+    {
+      title: "Item Menu Report",
+      to: "/item_menu_report",
+      icon: <PriceCheckIcon />,
+      roles: ["IT", "Manager Accounting"],
+    },
   ];
 
   const groItems = [
