@@ -50,6 +50,7 @@ import PaymentMonthlyReport from "./scenes/report/monthlyPayment";
 import PaymentDailyReport from "./scenes/report/dailyPayment";
 import ItemMenuReport from "./scenes/report/itemMenu";
 import CustomerReport from "./scenes/report/customer";
+import Account from "./scenes/account";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -212,6 +213,14 @@ function App() {
                   element={
                     <ProtectedRoute allowedRoles={["IT", "Manager Accounting"]}>
                       <DisbursementList />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/account"
+                  element={
+                    <ProtectedRoute allowedRoles={["IT", "Manager Accounting"]}>
+                      <Account />
                     </ProtectedRoute>
                   }
                 />

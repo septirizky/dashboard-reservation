@@ -1,6 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
-import { Box, Typography, Button, Modal, TextField } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Button,
+  Modal,
+  TextField,
+  Select,
+  MenuItem,
+} from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
@@ -11,12 +19,14 @@ import {
 } from "../../data/reservationData";
 import { createDisbursement } from "../../data/disbursementData";
 import { toast, ToastContainer } from "react-toastify";
+import { getAccounts } from "../../data/accountData";
 
 const Disbursement = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
   const [summary, setSummary] = useState([]);
+  const [accounts, setAccounts] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [openFormModal, setOpenFormModal] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
@@ -111,14 +121,6 @@ const Disbursement = () => {
     });
   };
 
-  const handleFormChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [name]: value,
-    }));
-  };
-
   const getDisbursements = async () => {
     try {
       const data = await fetchReservationSummary();
@@ -136,6 +138,28 @@ const Disbursement = () => {
     } catch (error) {
       console.error("Error fetching disbursements:", error);
     }
+  };
+
+  const fetchAccounts = async () => {
+    try {
+      const accountData = await getAccounts();
+      setAccounts(accountData);
+    } catch (error) {
+      console.error("Error fetching accounts:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchAccounts();
+    getDisbursements();
+  }, []);
+
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }));
   };
 
   const handleFormSubmit = async () => {
@@ -177,10 +201,6 @@ const Disbursement = () => {
       });
     }
   };
-
-  useEffect(() => {
-    getDisbursements();
-  }, []);
 
   const columns = [
     {
@@ -269,7 +289,7 @@ const Disbursement = () => {
       flex: 0.4,
       headerAlign: "center",
       align: "right",
-      renderCell: (params) => `Rp ${params.row.dp.toLocaleString()}`,
+      renderCell: (params) => formatRupiah(params.value),
     },
   ];
 
@@ -329,6 +349,7 @@ const Disbursement = () => {
               handleRowClick(params.row);
             }
           }}
+          sortModel={[{ field: "branchName", sort: "asc" }]}
         />
       </Box>
 
@@ -387,27 +408,54 @@ const Disbursement = () => {
           <Typography variant="h6" gutterBottom>
             Disbursement Form
           </Typography>
-          <TextField
-            label="Bank Code"
+          <Select
             name="bankCode"
             value={formData.bankCode}
             onChange={handleFormChange}
             fullWidth
-          />
-          <TextField
-            label="Account Holder Name"
+            displayEmpty
+          >
+            <MenuItem value="" disabled>
+              Bank Name
+            </MenuItem>
+            {accounts.map((account) => (
+              <MenuItem key={account.accountId} value={account.bankName}>
+                {account.bankName}
+              </MenuItem>
+            ))}
+          </Select>
+          <Select
             name="accountHolderName"
             value={formData.accountHolderName}
             onChange={handleFormChange}
             fullWidth
-          />
-          <TextField
-            label="Account Number"
+            displayEmpty
+          >
+            <MenuItem value="" disabled>
+              Account Holder Name
+            </MenuItem>
+            {accounts.map((account) => (
+              <MenuItem key={account.accountId} value={account.accountHolder}>
+                {account.accountHolder}
+              </MenuItem>
+            ))}
+          </Select>
+          <Select
             name="accountNumber"
             value={formData.accountNumber}
             onChange={handleFormChange}
             fullWidth
-          />
+            displayEmpty
+          >
+            <MenuItem value="" disabled>
+              Account Number
+            </MenuItem>
+            {accounts.map((account) => (
+              <MenuItem key={account.accountId} value={account.accountNumber}>
+                {account.accountNumber}
+              </MenuItem>
+            ))}
+          </Select>
           <TextField
             label="Description"
             name="description"

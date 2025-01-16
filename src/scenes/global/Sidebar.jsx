@@ -8,6 +8,7 @@ import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import AssessmentOutlinedIcon from "@mui/icons-material/AssessmentOutlined";
 import AccountBalanceOutlinedIcon from "@mui/icons-material/AccountBalanceOutlined";
+import AssuredWorkloadOutlinedIcon from "@mui/icons-material/AssuredWorkloadOutlined";
 import SetMealOutlinedIcon from "@mui/icons-material/SetMealOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
@@ -288,6 +289,12 @@ const Sidebar = () => {
       icon: <PriceCheckIcon />,
       roles: ["IT", "Manager Accounting"],
     },
+    {
+      title: "Account",
+      to: "/account",
+      icon: <AccountBalanceOutlinedIcon />,
+      roles: ["IT", "Manager Accounting"],
+    },
   ];
 
   const reportItems = [
@@ -534,7 +541,7 @@ const Sidebar = () => {
               <SubMenu
                 title="Disbursement"
                 style={{ color: colors.grey[100] }}
-                icon={<AccountBalanceOutlinedIcon />}
+                icon={<AssuredWorkloadOutlinedIcon />}
                 open={groupOpenState.disbursement}
                 onClick={() => toggleGroupOpen("disbursement")}
               >
