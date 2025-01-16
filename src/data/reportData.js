@@ -171,3 +171,28 @@ export const fetchRefundDetailPerDate = async (
     return [];
   }
 };
+
+export const fetchReservationSummaryByBranchAndPhone = async (
+  selectedBranchCode
+) => {
+  try {
+    const token = localStorage.getItem("authToken");
+    const response = await axios.get(
+      `${API}/reservation_summary_by_branch_and_phone`,
+      {
+        params: { branchCode: selectedBranchCode },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.data && response.data.data) {
+      return response.data.data;
+    }
+    return [];
+  } catch (error) {
+    console.error("Error fetching reservation summary:", error);
+    return [];
+  }
+};
