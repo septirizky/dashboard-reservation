@@ -240,6 +240,18 @@ const ItemPackage = () => {
       headerAlign: "center",
     },
     {
+      field: "MaxChoosen",
+      headerName: "Max Choosen",
+      flex: 1,
+      headerAlign: "center",
+    },
+    {
+      field: "MinChoosen",
+      headerName: "Min Choosen",
+      flex: 1,
+      headerAlign: "center",
+    },
+    {
       field: "actions",
       headerName: "Actions",
       flex: 1,

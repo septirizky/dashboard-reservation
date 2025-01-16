@@ -480,7 +480,7 @@ const OptionPackage = () => {
             onChange={handleInputChange}
           />
           <Box display="flex" alignItems="center" gap={3} sx={{ flex: 1 }}>
-            <Typography>Menu Package</Typography>
+            <Typography>Auto Insert</Typography>
             <Switch
               checked={optionForm.AutoInsert}
               onChange={(e) =>
