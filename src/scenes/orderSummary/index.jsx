@@ -53,7 +53,6 @@ const OrderSummary = () => {
 
     const selectedDateFormatted = formatDate(selectedDate);
 
-    // Gabungkan Menu Name yang sama dan jumlahkan Qty
     const aggregatedData = summaryData.reduce((acc, row) => {
       const existingMenu = acc.find((item) => item.menuName === row.menuName);
       if (existingMenu) {
@@ -67,7 +66,6 @@ const OrderSummary = () => {
       return acc;
     }, []);
 
-    // Buat baris tabel hanya dengan Menu Name dan Qty
     const rows = aggregatedData
       .map(
         (item) => `

@@ -6,7 +6,7 @@ import "react-pro-sidebar/dist/css/styles.css";
 import { tokens } from "../../theme";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
-import SupervisorAccountOutlinedIcon from "@mui/icons-material/SupervisorAccountOutlined";
+import AssessmentOutlinedIcon from "@mui/icons-material/AssessmentOutlined";
 import AccountBalanceOutlinedIcon from "@mui/icons-material/AccountBalanceOutlined";
 import Diversity3OutlinedIcon from "@mui/icons-material/Diversity3Outlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
@@ -15,6 +15,7 @@ import FactCheckOutlinedIcon from "@mui/icons-material/FactCheckOutlined";
 import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
 import AvTimerIcon from "@mui/icons-material/AvTimer";
 import RequestQuoteOutlinedIcon from "@mui/icons-material/RequestQuoteOutlined";
+import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import EditCalendarIcon from "@mui/icons-material/EditCalendar";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import PriceCheckIcon from "@mui/icons-material/PriceCheck";
@@ -22,12 +23,15 @@ import SummarizeOutlinedIcon from "@mui/icons-material/SummarizeOutlined";
 import RoomServiceIcon from "@mui/icons-material/RoomService";
 import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
 import PermDataSettingIcon from "@mui/icons-material/PermDataSetting";
-// import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
+import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
 import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
+// import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
 // import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 // import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
 // import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutlined";
+import LunchDiningOutlinedIcon from "@mui/icons-material/LunchDiningOutlined";
 import RestaurantMenuIcon from "@mui/icons-material/RestaurantMenu";
+import FlatwareOutlinedIcon from "@mui/icons-material/FlatwareOutlined";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import CountertopsOutlinedIcon from "@mui/icons-material/CountertopsOutlined";
 
@@ -60,9 +64,11 @@ const Sidebar = () => {
   const [selected, setSelected] = useState(location.pathname);
   const [user, setUser] = useState({ name: "", role: "", photo: "" });
   const [groupOpenState, setGroupOpenState] = useState({
-    admin: false,
-    finance: false,
+    disbursement: false,
+    report: false,
     gro: false,
+    itemOption: false,
+    config: false,
   });
 
   useEffect(() => {
@@ -93,7 +99,24 @@ const Sidebar = () => {
         "Head Accounting",
       ],
     },
-
+    {
+      title: "Manage Team",
+      to: "/team",
+      icon: <PeopleOutlinedIcon />,
+      roles: ["IT"],
+    },
+    // {
+    //   title: "Request Refund",
+    //   to: "/request_refund",
+    //   icon: <ReceiptOutlinedIcon />,
+    //   roles: [
+    //     "IT",
+    //     "Business Development",
+    //     "Manager Accounting",
+    //     "Assistant Manager Accounting",
+    //     "Head Accounting",
+    //   ],
+    // },
     // {
     //   title: "Category Grist",
     //   to: "/category_grist",
@@ -210,13 +233,7 @@ const Sidebar = () => {
     // },
   ];
 
-  const adminItems = [
-    {
-      title: "Manage Team",
-      to: "/team",
-      icon: <PeopleOutlinedIcon />,
-      roles: ["IT"],
-    },
+  const configItems = [
     {
       title: "Branch",
       to: "/branch",
@@ -243,19 +260,7 @@ const Sidebar = () => {
     },
   ];
 
-  const financeItems = [
-    // {
-    //   title: "Request Refund",
-    //   to: "/request_refund",
-    //   icon: <ReceiptOutlinedIcon />,
-    //   roles: [
-    //     "IT",
-    //     "Business Development",
-    //     "Manager Accounting",
-    //     "Assistant Manager Accounting",
-    //     "Head Accounting",
-    //   ],
-    // },
+  const disbursementItems = [
     {
       title: "Disbursement",
       to: "/disbursement",
@@ -268,44 +273,38 @@ const Sidebar = () => {
       icon: <PriceCheckIcon />,
       roles: ["IT", "Manager Accounting"],
     },
+  ];
+
+  const reportItems = [
     {
       title: "Reservation Monthly Report",
       to: "/reservation_monthly_report",
-      icon: <ReceiptOutlinedIcon />,
+      icon: <CalendarMonthOutlinedIcon />,
       roles: ["IT", "Manager Accounting"],
     },
     {
       title: "Reservation Daily Report",
       to: "/reservation_daily_report",
-      icon: <ReceiptOutlinedIcon />,
+      icon: <CalendarMonthOutlinedIcon />,
       roles: ["IT", "Manager Accounting"],
     },
     {
       title: "Payment Monthly Report",
       to: "/payment_monthly_report",
-      icon: <ReceiptOutlinedIcon />,
+      icon: <RequestQuoteOutlinedIcon />,
       roles: ["IT", "Manager Accounting"],
     },
     {
       title: "Payment Daily Report",
       to: "/payment_daily_report",
-      icon: <PriceCheckIcon />,
+      icon: <RequestQuoteOutlinedIcon />,
       roles: ["IT", "Manager Accounting"],
     },
     {
       title: "Item Menu Report",
       to: "/item_menu_report",
-      icon: <PriceCheckIcon />,
+      icon: <LunchDiningOutlinedIcon />,
       roles: ["IT", "Manager Accounting"],
-    },
-  ];
-
-  const groItems = [
-    {
-      title: "Quota Branch",
-      to: "/branch_quota",
-      icon: <EditCalendarIcon />,
-      roles: ["IT", "GRO"],
     },
     {
       title: "Customers",
@@ -319,6 +318,28 @@ const Sidebar = () => {
         "Head Accounting",
         "GRO",
       ],
+    },
+    {
+      title: "Cancellation List",
+      to: "/list_cancel",
+      icon: <CancelOutlinedIcon />,
+      roles: [
+        "IT",
+        "Business Development",
+        "Manager Accounting",
+        "Assistant Manager Accounting",
+        "Head Accounting",
+        "GRO",
+      ],
+    },
+  ];
+
+  const groItems = [
+    {
+      title: "Quota Branch",
+      to: "/branch_quota",
+      icon: <EditCalendarIcon />,
+      roles: ["IT", "GRO"],
     },
     {
       title: "Reservation Summary",
@@ -344,54 +365,44 @@ const Sidebar = () => {
       icon: <SummarizeOutlinedIcon />,
       roles: ["IT", "GRO"],
     },
-    {
-      title: "Cancellation List",
-      to: "/list_cancel",
-      icon: <RequestQuoteOutlinedIcon />,
-      roles: [
-        "IT",
-        "Business Development",
-        "Manager Accounting",
-        "Assistant Manager Accounting",
-        "Head Accounting",
-        "GRO",
-      ],
-    },
+  ];
+
+  const itemOptionItems = [
     {
       title: "Category",
       to: "/category",
       icon: <RestaurantMenuIcon />,
-      roles: ["GRO"],
+      roles: ["IT", "GRO"],
     },
     {
       title: "Menu",
       to: "/menu",
-      icon: <MenuBookIcon />,
-      roles: ["GRO"],
+      icon: <FlatwareOutlinedIcon />,
+      roles: ["IT", "GRO"],
     },
     {
       title: "Option",
       to: "/option",
-      icon: <CountertopsOutlinedIcon />,
-      roles: ["GRO"],
+      icon: <MenuBookIcon />,
+      roles: ["IT", "GRO"],
     },
     {
       title: "Item Option",
       to: "/item_option",
       icon: <CountertopsOutlinedIcon />,
-      roles: ["GRO"],
+      roles: ["IT", "GRO"],
     },
     {
       title: "Option Package",
       to: "/option_package",
       icon: <CountertopsOutlinedIcon />,
-      roles: ["GRO"],
+      roles: ["IT", "GRO"],
     },
     {
       title: "Item Package",
       to: "/item_package",
       icon: <CountertopsOutlinedIcon />,
-      roles: ["GRO"],
+      roles: ["IT", "GRO"],
     },
   ];
 
@@ -399,15 +410,23 @@ const Sidebar = () => {
     menu.roles.includes(user.role)
   );
 
-  const filteredAdminItems = adminItems.filter((menu) =>
+  const filteredConfigItems = configItems.filter((menu) =>
     menu.roles.includes(user.role)
   );
 
-  const filteredFinanceItems = financeItems.filter((menu) =>
+  const filteredDisbursementItems = disbursementItems.filter((menu) =>
+    menu.roles.includes(user.role)
+  );
+
+  const filteredReportItems = reportItems.filter((menu) =>
     menu.roles.includes(user.role)
   );
 
   const filteredGroItems = groItems.filter((menu) =>
+    menu.roles.includes(user.role)
+  );
+
+  const filtereditemOptionItems = itemOptionItems.filter((menu) =>
     menu.roles.includes(user.role)
   );
 
@@ -497,62 +516,110 @@ const Sidebar = () => {
               />
             ))}
 
-            <SubMenu
-              title="Admin"
-              style={{ color: colors.grey[100] }}
-              icon={<SupervisorAccountOutlinedIcon />}
-              open={groupOpenState.admin}
-              onClick={() => toggleGroupOpen("admin")}
-            >
-              {filteredAdminItems.map((menu) => (
-                <Item
-                  key={menu.to}
-                  title={menu.title}
-                  to={menu.to}
-                  icon={menu.icon}
-                  selected={selected}
-                  setSelected={setSelected}
-                />
-              ))}
-            </SubMenu>
+            {["IT", "Manager Accounting"].includes(user.role) && (
+              <SubMenu
+                title="Disbursement"
+                style={{ color: colors.grey[100] }}
+                icon={<AccountBalanceOutlinedIcon />}
+                open={groupOpenState.disbursement}
+                onClick={() => toggleGroupOpen("disbursement")}
+              >
+                {filteredDisbursementItems.map((menu) => (
+                  <Item
+                    key={menu.to}
+                    title={menu.title}
+                    to={menu.to}
+                    icon={menu.icon}
+                    selected={selected}
+                    setSelected={setSelected}
+                  />
+                ))}
+              </SubMenu>
+            )}
 
-            <SubMenu
-              title="Finance"
-              style={{ color: colors.grey[100] }}
-              icon={<AccountBalanceOutlinedIcon />}
-              open={groupOpenState.finance}
-              onClick={() => toggleGroupOpen("finance")}
-            >
-              {filteredFinanceItems.map((menu) => (
-                <Item
-                  key={menu.to}
-                  title={menu.title}
-                  to={menu.to}
-                  icon={menu.icon}
-                  selected={selected}
-                  setSelected={setSelected}
-                />
-              ))}
-            </SubMenu>
+            {["IT", "GRO"].includes(user.role) && (
+              <SubMenu
+                title="GRO"
+                style={{ color: colors.grey[100] }}
+                icon={<Diversity3OutlinedIcon />}
+                open={groupOpenState.gro}
+                onClick={() => toggleGroupOpen("gro")}
+              >
+                {filteredGroItems.map((menu) => (
+                  <Item
+                    key={menu.to}
+                    title={menu.title}
+                    to={menu.to}
+                    icon={menu.icon}
+                    selected={selected}
+                    setSelected={setSelected}
+                  />
+                ))}
+              </SubMenu>
+            )}
 
-            <SubMenu
-              title="GRO"
-              style={{ color: colors.grey[100] }}
-              icon={<Diversity3OutlinedIcon />}
-              open={groupOpenState.gro}
-              onClick={() => toggleGroupOpen("gro")}
-            >
-              {filteredGroItems.map((menu) => (
-                <Item
-                  key={menu.to}
-                  title={menu.title}
-                  to={menu.to}
-                  icon={menu.icon}
-                  selected={selected}
-                  setSelected={setSelected}
-                />
-              ))}
-            </SubMenu>
+            {["IT", "GRO"].includes(user.role) && (
+              <SubMenu
+                title="Item & Option"
+                style={{ color: colors.grey[100] }}
+                icon={<Diversity3OutlinedIcon />}
+                open={groupOpenState.itemOption}
+                onClick={() => toggleGroupOpen("itemOption")}
+              >
+                {filtereditemOptionItems.map((menu) => (
+                  <Item
+                    key={menu.to}
+                    title={menu.title}
+                    to={menu.to}
+                    icon={menu.icon}
+                    selected={selected}
+                    setSelected={setSelected}
+                  />
+                ))}
+              </SubMenu>
+            )}
+
+            {["IT", "Manager Accounting"].includes(user.role) && (
+              <SubMenu
+                title="Report"
+                style={{ color: colors.grey[100] }}
+                icon={<AssessmentOutlinedIcon />}
+                open={groupOpenState.report}
+                onClick={() => toggleGroupOpen("report")}
+              >
+                {filteredReportItems.map((menu) => (
+                  <Item
+                    key={menu.to}
+                    title={menu.title}
+                    to={menu.to}
+                    icon={menu.icon}
+                    selected={selected}
+                    setSelected={setSelected}
+                  />
+                ))}
+              </SubMenu>
+            )}
+
+            {user.role === "IT" && (
+              <SubMenu
+                title="Configuration"
+                style={{ color: colors.grey[100] }}
+                icon={<PermDataSettingIcon />}
+                open={groupOpenState.config}
+                onClick={() => toggleGroupOpen("config")}
+              >
+                {filteredConfigItems.map((menu) => (
+                  <Item
+                    key={menu.to}
+                    title={menu.title}
+                    to={menu.to}
+                    icon={menu.icon}
+                    selected={selected}
+                    setSelected={setSelected}
+                  />
+                ))}
+              </SubMenu>
+            )}
           </Box>
         </Menu>
       </ProSidebar>
