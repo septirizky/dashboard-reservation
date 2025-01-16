@@ -8,7 +8,7 @@ import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import AssessmentOutlinedIcon from "@mui/icons-material/AssessmentOutlined";
 import AccountBalanceOutlinedIcon from "@mui/icons-material/AccountBalanceOutlined";
-import Diversity3OutlinedIcon from "@mui/icons-material/Diversity3Outlined";
+import SetMealOutlinedIcon from "@mui/icons-material/SetMealOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
 import FactCheckOutlinedIcon from "@mui/icons-material/FactCheckOutlined";
@@ -31,6 +31,8 @@ import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined
 // import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutlined";
 import LunchDiningOutlinedIcon from "@mui/icons-material/LunchDiningOutlined";
 import RestaurantMenuIcon from "@mui/icons-material/RestaurantMenu";
+import LiquorOutlinedIcon from "@mui/icons-material/LiquorOutlined";
+import BrunchDiningOutlinedIcon from "@mui/icons-material/BrunchDiningOutlined";
 import FlatwareOutlinedIcon from "@mui/icons-material/FlatwareOutlined";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import CountertopsOutlinedIcon from "@mui/icons-material/CountertopsOutlined";
@@ -104,6 +106,19 @@ const Sidebar = () => {
       to: "/team",
       icon: <PeopleOutlinedIcon />,
       roles: ["IT"],
+    },
+    {
+      title: "Customers",
+      to: "/customers",
+      icon: <ContactsOutlinedIcon />,
+      roles: [
+        "IT",
+        "Business Development",
+        "Manager Accounting",
+        "Assistant Manager Accounting",
+        "Head Accounting",
+        "GRO",
+      ],
     },
     // {
     //   title: "Request Refund",
@@ -307,8 +322,8 @@ const Sidebar = () => {
       roles: ["IT", "Manager Accounting"],
     },
     {
-      title: "Customers",
-      to: "/customers",
+      title: "Customers Report",
+      to: "/customer_report",
       icon: <ContactsOutlinedIcon />,
       roles: [
         "IT",
@@ -316,7 +331,6 @@ const Sidebar = () => {
         "Manager Accounting",
         "Assistant Manager Accounting",
         "Head Accounting",
-        "GRO",
       ],
     },
     {
@@ -371,31 +385,31 @@ const Sidebar = () => {
     {
       title: "Category",
       to: "/category",
-      icon: <RestaurantMenuIcon />,
+      icon: <FlatwareOutlinedIcon />,
       roles: ["IT", "GRO"],
     },
     {
       title: "Menu",
       to: "/menu",
-      icon: <FlatwareOutlinedIcon />,
+      icon: <RestaurantMenuIcon />,
       roles: ["IT", "GRO"],
     },
     {
       title: "Option",
       to: "/option",
-      icon: <MenuBookIcon />,
+      icon: <LiquorOutlinedIcon />,
       roles: ["IT", "GRO"],
     },
     {
       title: "Item Option",
       to: "/item_option",
-      icon: <CountertopsOutlinedIcon />,
+      icon: <BrunchDiningOutlinedIcon />,
       roles: ["IT", "GRO"],
     },
     {
       title: "Option Package",
       to: "/option_package",
-      icon: <CountertopsOutlinedIcon />,
+      icon: <LunchDiningOutlinedIcon />,
       roles: ["IT", "GRO"],
     },
     {
@@ -541,7 +555,7 @@ const Sidebar = () => {
               <SubMenu
                 title="Reservation Management"
                 style={{ color: colors.grey[100] }}
-                icon={<Diversity3OutlinedIcon />}
+                icon={<MenuBookIcon />}
                 open={groupOpenState.gro}
                 onClick={() => toggleGroupOpen("gro")}
               >
@@ -562,7 +576,7 @@ const Sidebar = () => {
               <SubMenu
                 title="Item & Option"
                 style={{ color: colors.grey[100] }}
-                icon={<Diversity3OutlinedIcon />}
+                icon={<SetMealOutlinedIcon />}
                 open={groupOpenState.itemOption}
                 onClick={() => toggleGroupOpen("itemOption")}
               >
@@ -579,7 +593,7 @@ const Sidebar = () => {
               </SubMenu>
             )}
 
-            {["IT", "Manager Accounting"].includes(user.role) && (
+            {["IT", "Manager Accounting", "GRO"].includes(user.role) && (
               <SubMenu
                 title="Report"
                 style={{ color: colors.grey[100] }}
