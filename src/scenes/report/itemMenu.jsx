@@ -91,32 +91,92 @@ const ItemMenuReport = () => {
   };
 
   const exportToExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet(summaryData);
+    const excelHeaders = [
+      { header: "Branch Name", key: "branchName" },
+      { header: "Branch Code", key: "branchCode" },
+      { header: "Date", key: "date" },
+      { header: "Category Name", key: "CategoryName" },
+      { header: "Menu Name", key: "MenuName" },
+      { header: "Price", key: "MenuPrice" },
+      { header: "Qty", key: "quantities" },
+      { header: "Total Amount", key: "totalAmount" },
+    ];
+
+    const formattedData = summaryData.map((row) => {
+      return excelHeaders.reduce((acc, header) => {
+        acc[header.header] = row[header.key];
+        return acc;
+      }, {});
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(formattedData);
     const workbook = XLSX.utils.book_new();
+
     XLSX.utils.book_append_sheet(workbook, worksheet, "ItemSummary");
     XLSX.writeFile(workbook, `ItemSummary_${startDate}_to_${endDate}.xlsx`);
   };
 
-  const viewInNewTab = () => {
-    const newWindow = window.open();
-    newWindow.document.write("<h1>Item Summary Report</h1>");
-    newWindow.document.write("<table border='1'>");
-    newWindow.document.write(
-      "<tr><th>Branch Name</th><th>Date</th><th>Category Name</th><th>Menu Name</th><th>QTY</th><th>Menu Price</th><th>Total Amount</th></tr>"
-    );
-    summaryData.forEach((item) => {
-      newWindow.document.write(
-        `<tr><td>${item.branchName}</td><td>${item.date}</td><td>${
-          item.CategoryName
-        }</td><td>${item.MenuName}</td><td>${
-          item.quantities
-        }</td><td>${formatRupiah(item.MenuPrice)}</td><td>${formatRupiah(
-          item.totalAmount
-        )}</td></tr>`
-      );
+  const handlePrint = () => {
+    const printContent = `
+      <h2 style="text-align: center;">Item Summary Report</h2>
+      <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+          <tr>
+            <th style="border: 1px solid #ddd; padding: 5px;">Branch Name</th>
+            <th style="border: 1px solid #ddd; padding: 5px;">Date</th>
+            <th style="border: 1px solid #ddd; padding: 5px;">Category Name</th>
+            <th style="border: 1px solid #ddd; padding: 5px;">Menu Name</th>
+            <th style="border: 1px solid #ddd; padding: 5px;">Price</th>
+            <th style="border: 1px solid #ddd; padding: 5px;">Qty</th>
+            <th style="border: 1px solid #ddd; padding: 5px;">Total Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${summaryData
+            .map(
+              (row) => `
+            <tr>
+              <td style="border: 1px solid #ddd; padding: 5px;">${row.branchName}</td>
+              <td style="border: 1px solid #ddd; padding: 5px;">${row.date}</td>
+              <td style="border: 1px solid #ddd; padding: 5px;">${row.CategoryName}</td>
+              <td style="border: 1px solid #ddd; padding: 5px;">${row.MenuName}</td>
+              <td style="border: 1px solid #ddd; padding: 5px; text-align: right;">${row.MenuPrice}</td>
+              <td style="border: 1px solid #ddd; padding: 5px; text-align: right;">${row.quantities}</td>
+              <td style="border: 1px solid #ddd; padding: 5px; text-align: right;">${row.totalAmount}</td>
+            </tr>
+          `
+            )
+            .join("")}
+        </tbody>
+      </table>
+    `;
+
+    const iframe = document.createElement("iframe");
+    iframe.style.position = "absolute";
+    iframe.style.width = "0";
+    iframe.style.height = "0";
+    iframe.style.border = "none";
+    document.body.appendChild(iframe);
+
+    const iframeDocument = iframe.contentWindow.document;
+    iframeDocument.open();
+    iframeDocument.write(`
+      <html>
+        <head>
+          <title>Reservation Monthly Report</title>
+        </head>
+        <body>
+          ${printContent}
+        </body>
+      </html>
+    `);
+    iframeDocument.close();
+
+    iframe.contentWindow.focus();
+    iframe.contentWindow.print();
+    iframe.addEventListener("afterprint", () => {
+      document.body.removeChild(iframe);
     });
-    newWindow.document.write("</table>");
-    newWindow.document.close();
   };
 
   const columns = [
@@ -214,8 +274,8 @@ const ItemMenuReport = () => {
           >
             Export to Excel
           </Button>
-          <Button variant="contained" color="info" onClick={viewInNewTab}>
-            View in New Tab
+          <Button variant="contained" color="info" onClick={handlePrint}>
+            Print Report
           </Button>
         </Box>
       </Box>

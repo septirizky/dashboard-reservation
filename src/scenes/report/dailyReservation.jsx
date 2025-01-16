@@ -14,8 +14,6 @@ import Header from "../../components/Header";
 import { useTheme } from "@mui/material";
 import { fetchReservationDetailPerTime } from "../../data/reportData";
 import * as XLSX from "xlsx";
-// import jsPDF from "jspdf";
-// import "jspdf-autotable";
 
 const ReservationDailyReport = () => {
   const theme = useTheme();
@@ -109,67 +107,101 @@ const ReservationDailyReport = () => {
   };
 
   const exportToExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet(detailsData);
+    const excelHeaders = [
+      { header: "Branch Name", key: "branchName" },
+      { header: "Branch Code", key: "branchCode" },
+      { header: "Date", key: "date" },
+      { header: "Reservation Code", key: "reservationCode" },
+      { header: "Name", key: "name" },
+      { header: "Pax", key: "pax" },
+      { header: "Phone", key: "phone" },
+      { header: "Time", key: "time" },
+      { header: "Total DP", key: "totalDP" },
+      { header: "Total Amount", key: "totalAmount" },
+    ];
+
+    const formattedData = detailsData.map((row) => {
+      return excelHeaders.reduce((acc, header) => {
+        acc[header.header] = row[header.key];
+        return acc;
+      }, {});
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(formattedData);
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "DailyReport");
-    XLSX.writeFile(workbook, `DailyReport_${startDate}_to_${endDate}.xlsx`);
+
+    XLSX.utils.book_append_sheet(workbook, worksheet, "ReservationDailyReport");
+    XLSX.writeFile(
+      workbook,
+      `ReservationDailyReport_${startDate}_to_${endDate}.xlsx`
+    );
   };
 
-  //   const exportToPDF = () => {
-  //     const doc = new jsPDF();
-  //     doc.text("Daily Report", 14, 10);
-  //     doc.autoTable({
-  //       startY: 20,
-  //       head: [
-  //         [
-  //           "Branch Name",
-  //           "Branch Code",
-  //           "Date",
-  //           "Time",
-  //           "Reservation Code",
-  //           "Customer Name",
-  //           "Phone",
-  //           "Pax",
-  //           "DP",
-  //           "Amount",
-  //         ],
-  //       ],
-  //       body: detailsData.map((row) => [
-  //         row.branchName,
-  //         row.branchCode,
-  //         row.date,
-  //         row.time,
-  //         row.reservationCode,
-  //         row.name,
-  //         row.phone,
-  //         row.pax,
-  //         formatRupiah(row.totalDP),
-  //         formatRupiah(row.totalAmount),
-  //       ]),
-  //     });
-  //     doc.save(`DailyReport_${startDate}_to_${endDate}.pdf`);
-  //   };
+  const handlePrint = () => {
+    const printContent = `
+      <h2 style="text-align: center;">Reservation Daily Report</h2>
+      <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+          <tr>
+            <th style="border: 1px solid #ddd; padding: 5px;">Branch Name</th>
+            <th style="border: 1px solid #ddd; padding: 5px;">Date</th>
+            <th style="border: 1px solid #ddd; padding: 5px;">Time</th>
+            <th style="border: 1px solid #ddd; padding: 5px;">Reservstion Code</th>
+            <th style="border: 1px solid #ddd; padding: 5px;">Name</th>
+            <th style="border: 1px solid #ddd; padding: 5px;">Phone</th>
+            <th style="border: 1px solid #ddd; padding: 5px;">Pax</th>
+            <th style="border: 1px solid #ddd; padding: 5px;">DP</th>
+            <th style="border: 1px solid #ddd; padding: 5px;">Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${detailsData
+            .map(
+              (row) => `
+            <tr>
+              <td style="border: 1px solid #ddd; padding: 5px;">${row.branchName}</td>
+              <td style="border: 1px solid #ddd; padding: 5px;">${row.date}</td>
+              <td style="border: 1px solid #ddd; padding: 5px;">${row.time}</td>
+              <td style="border: 1px solid #ddd; padding: 5px;">${row.reservationCode}</td>
+              <td style="border: 1px solid #ddd; padding: 5px;">${row.name}</td>
+              <td style="border: 1px solid #ddd; padding: 5px;">${row.phone}</td>
+              <td style="border: 1px solid #ddd; padding: 5px; text-align: right;">${row.pax}</td>
+              <td style="border: 1px solid #ddd; padding: 5px; text-align: right;">${row.totalDP}</td>
+              <td style="border: 1px solid #ddd; padding: 5px; text-align: right;">${row.totalAmount}</td>
+            </tr>
+          `
+            )
+            .join("")}
+        </tbody>
+      </table>
+    `;
 
-  const viewInNewTab = () => {
-    const newWindow = window.open();
-    newWindow.document.write("<h1>Daily Report</h1>");
-    newWindow.document.write("<table border='1'>");
-    newWindow.document.write(
-      "<tr><th>Branch Name</th><th>Branch Code</th><th>Date</th><th>Time</th><th>Reservation Code</th><th>Customer Name</th><th>Phone</th><th>Pax</th><th>DP</th><th>Amount</th></tr>"
-    );
-    detailsData.forEach((row) => {
-      newWindow.document.write(
-        `<tr><td>${row.branchName}</td><td>${row.branchCode}</td><td>${
-          row.date
-        }</td><td>${row.time}</td><td>${row.reservationCode}</td><td>${
-          row.name
-        }</td><td>${row.phone}</td><td>${row.pax}</td><td>${formatRupiah(
-          row.totalDP
-        )}</td><td>${formatRupiah(row.totalAmount)}</td></tr>`
-      );
+    const iframe = document.createElement("iframe");
+    iframe.style.position = "absolute";
+    iframe.style.width = "0";
+    iframe.style.height = "0";
+    iframe.style.border = "none";
+    document.body.appendChild(iframe);
+
+    const iframeDocument = iframe.contentWindow.document;
+    iframeDocument.open();
+    iframeDocument.write(`
+      <html>
+        <head>
+          <title>Reservation Monthly Report</title>
+        </head>
+        <body>
+          ${printContent}
+        </body>
+      </html>
+    `);
+    iframeDocument.close();
+
+    iframe.contentWindow.focus();
+    iframe.contentWindow.print();
+    iframe.addEventListener("afterprint", () => {
+      document.body.removeChild(iframe);
     });
-    newWindow.document.write("</table>");
-    newWindow.document.close();
   };
 
   const columns = [
@@ -241,8 +273,8 @@ const ReservationDailyReport = () => {
   return (
     <Box m="20px">
       <Header
-        title="RESERVATION DETAIL PER TIME"
-        subtitle="Detailed Reservation Data by Time"
+        title="RESERVATION DAILY REPORT"
+        subtitle="Detailed Reservations Data by Time"
       />
       <Box display="flex" alignItems="center" mb="20px" gap="20px">
         <FormControl sx={{ minWidth: 200 }}>
@@ -297,16 +329,8 @@ const ReservationDailyReport = () => {
           >
             Export to Excel
           </Button>
-          {/* <Button
-            variant="contained"
-            color="secondary"
-            onClick={exportToPDF}
-            sx={{ marginRight: "10px" }}
-          >
-            Export to PDF
-          </Button> */}
-          <Button variant="contained" color="info" onClick={viewInNewTab}>
-            View in New Tab
+          <Button variant="contained" color="info" onClick={handlePrint}>
+            Print Report
           </Button>
         </Box>
       </Box>
