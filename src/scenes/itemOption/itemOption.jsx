@@ -420,7 +420,6 @@ const ItemOption = () => {
           </Select>
 
           <Box display="flex" gap={2}>
-            {/* Kolom Menu atau Category */}
             <Box
               sx={{
                 width: "45%",
@@ -469,7 +468,6 @@ const ItemOption = () => {
               </List>
             </Box>
 
-            {/* Kolom Options */}
             <Box
               sx={{
                 width: "45%",

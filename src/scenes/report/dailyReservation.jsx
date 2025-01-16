@@ -306,11 +306,11 @@ const ReservationDailyReport = () => {
           onChange={(e) => setEndDate(e.target.value)}
         />
         <FormControl sx={{ minWidth: 200 }}>
-          <InputLabel id="time-select-label">Select Time</InputLabel>
           <Select
             labelId="time-select-label"
             value={selectedTime}
             onChange={(e) => setSelectedTime(e.target.value)}
+            displayEmpty
           >
             <MenuItem value="">All Times</MenuItem>
             {timeOptions.map((time) => (

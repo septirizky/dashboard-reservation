@@ -325,13 +325,11 @@ const PaymentMonthlyReport = () => {
           </Select>
         </FormControl>
         <FormControl sx={{ minWidth: 200 }}>
-          <InputLabel id="payment-channel-select-label">
-            Payment Channel
-          </InputLabel>
           <Select
             labelId="payment-channel-select-label"
             value={selectedPaymentChannel}
             onChange={handlePaymentChannelChange}
+            displayEmpty
           >
             {paymentChannels.map((channel) => (
               <MenuItem key={channel.value} value={channel.value}>
@@ -342,13 +340,11 @@ const PaymentMonthlyReport = () => {
         </FormControl>
 
         <FormControl sx={{ minWidth: 200 }}>
-          <InputLabel id="payment-method-select-label">
-            Payment Method
-          </InputLabel>
           <Select
             labelId="payment-method-select-label"
             value={selectedPaymentMethod}
             onChange={handlePaymentMethodChange}
+            displayEmpty
           >
             {paymentMethods.map((method) => (
               <MenuItem key={method.value} value={method.value}>
