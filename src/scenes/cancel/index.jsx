@@ -31,6 +31,18 @@ const ListCancel = () => {
     return today.toISOString().split("T")[0];
   });
 
+  const formatRupiah = (number) => {
+    if (!number || isNaN(number)) return "Rp 0";
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    })
+      .format(number)
+      .replace("Rp", "Rp ");
+  };
+
   useEffect(() => {
     const userDataRaw = localStorage.getItem("userData");
     const userData = userDataRaw ? JSON.parse(userDataRaw) : null;
@@ -148,7 +160,7 @@ const ListCancel = () => {
     iframeDocument.write(`
       <html>
         <head>
-          <title>Reservation Monthly Report</title>
+          <title>Cancellation List Report</title>
         </head>
         <body>
           ${printContent}
@@ -189,15 +201,15 @@ const ListCancel = () => {
       flex: 0.5,
       headerAlign: "center",
       align: "right",
-      renderCell: (params) => `Rp ${params.value.toLocaleString("id-ID")}`,
+      renderCell: (params) => formatRupiah(params.value),
     },
   ];
 
   return (
     <Box m="20px">
       <Header
-        title="REFUND DETAIL PER DATE"
-        subtitle="Detail of Refunds by Date"
+        title="CANCELLATION LIST REPORT"
+        subtitle="Detail of Cancels by Date"
       />
       <Box display="flex" gap="20px" mb="20px">
         <FormControl sx={{ minWidth: 200 }}>
