@@ -539,7 +539,7 @@ const Sidebar = () => {
 
             {["IT", "GRO"].includes(user.role) && (
               <SubMenu
-                title="GRO"
+                title="Reservation Management"
                 style={{ color: colors.grey[100] }}
                 icon={<Diversity3OutlinedIcon />}
                 open={groupOpenState.gro}
