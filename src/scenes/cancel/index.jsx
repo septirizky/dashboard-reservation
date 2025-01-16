@@ -1,117 +1,187 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
-import { Box, useTheme, Button, Typography, Modal } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
+import {
+  Box,
+  MenuItem,
+  Select,
+  InputLabel,
+  FormControl,
+  Button,
+  TextField,
+} from "@mui/material";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
-import { getRefundByBranchCode } from "../../data/refundData";
-import { fetchReservationsByBranchCodes } from "../../data/reservationData";
+import { useTheme } from "@mui/material";
+import { fetchRefundDetailPerDate } from "../../data/reportData";
+import * as XLSX from "xlsx";
 
 const ListCancel = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [refunds, setRefunds] = useState([]);
-  const [reservations, setReservations] = useState([]);
-  const [openModal, setOpenModal] = useState(false);
-  const [selectedItems, setSelectedItems] = useState([]);
 
-  const [selectedReservation, setSelectedReservation] = useState(null);
-
-  const handleOpenModal = (reservationCode) => {
-    const reservation = reservations.find(
-      (res) => res.reservationCode === reservationCode
-    );
-    setSelectedReservation(reservation || null);
-    setSelectedItems(reservation?.items || []);
-    setOpenModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setOpenModal(false);
-    setSelectedItems([]);
-  };
-
-  const branchCodes =
-    JSON.parse(localStorage.getItem("userData"))?.branchCode || [];
-
-  const getRefunds = async () => {
-    try {
-      const refundPromises = branchCodes.map((branchCode) =>
-        getRefundByBranchCode(branchCode)
-      );
-
-      const allResponses = await Promise.allSettled(refundPromises);
-
-      const successfulResponses = allResponses
-        .filter((res) => res.status === "fulfilled")
-        .map((res) => res.value);
-
-      const allRefunds = successfulResponses.flat();
-
-      const transformedData = allRefunds.map((refund) => ({
-        ...refund,
-        amount: new Intl.NumberFormat("id-ID", {
-          style: "currency",
-          currency: "IDR",
-        }).format(refund.amount || 0),
-      }));
-
-      setRefunds(transformedData);
-    } catch (error) {
-      console.error("Error fetching refunds data:", error);
-    }
-  };
-
-  const getReservations = async () => {
-    try {
-      const data = await fetchReservationsByBranchCodes(branchCodes);
-      setReservations(data);
-    } catch (error) {
-      console.error("Error fetching or posting data:", error);
-    }
-  };
+  const [refundData, setRefundData] = useState([]);
+  const [branchCodes, setBranchCodes] = useState([]);
+  const [selectedBranchCode, setSelectedBranchCode] = useState("");
+  const [startDate, setStartDate] = useState(() => {
+    const currentYear = new Date().getFullYear();
+    return `${currentYear}-01-01`;
+  });
+  const [endDate, setEndDate] = useState(() => {
+    const today = new Date();
+    return today.toISOString().split("T")[0];
+  });
 
   useEffect(() => {
-    getReservations();
-    getRefunds();
+    const userDataRaw = localStorage.getItem("userData");
+    const userData = userDataRaw ? JSON.parse(userDataRaw) : null;
+
+    if (
+      userData &&
+      Array.isArray(userData.branchCode) &&
+      Array.isArray(userData.branchName)
+    ) {
+      const branches = userData.branchCode.map((code, index) => ({
+        branchCode: code,
+        branchName: userData.branchName[index] || code,
+      }));
+
+      setBranchCodes(branches);
+      setSelectedBranchCode(branches[0]?.branchCode || "");
+    } else {
+      console.error(
+        "Invalid userData or branchCode/branchName in localStorage"
+      );
+      setBranchCodes([]);
+    }
   }, []);
+
+  useEffect(() => {
+    const fetchDetails = async () => {
+      if (!selectedBranchCode || !startDate || !endDate) return;
+
+      try {
+        const refunds = await fetchRefundDetailPerDate(
+          selectedBranchCode,
+          startDate,
+          endDate
+        );
+        setRefundData(refunds);
+      } catch (error) {
+        console.error("Error fetching refund detail per date:", error);
+      }
+    };
+
+    fetchDetails();
+  }, [selectedBranchCode, startDate, endDate]);
+
+  const handleBranchChange = (event) => {
+    setSelectedBranchCode(event.target.value);
+  };
+
+  const exportToExcel = () => {
+    const excelHeaders = [
+      { header: "Branch Name", key: "branchName" },
+      { header: "Branch Code", key: "branchCode" },
+      { header: "Date", key: "date" },
+      { header: "Reason", key: "reason" },
+      { header: "Amount", key: "amount" },
+      { header: "Status", key: "status" },
+    ];
+
+    const formattedData = refundData.map((row) => {
+      return excelHeaders.reduce((acc, header) => {
+        acc[header.header] = row[header.key];
+        return acc;
+      }, {});
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(formattedData);
+    const workbook = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(workbook, worksheet, "CancellationListReport");
+    XLSX.writeFile(
+      workbook,
+      `CancellationListReport_${startDate}_to_${endDate}.xlsx`
+    );
+  };
+
+  const handlePrint = () => {
+    const printContent = `
+      <h2 style="text-align: center;">Cancellation List Report</h2>
+      <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+          <tr>
+            <th style="border: 1px solid #ddd; padding: 5px;">Branch Name</th>
+            <th style="border: 1px solid #ddd; padding: 5px;">Date</th>
+            <th style="border: 1px solid #ddd; padding: 5px;">Reason</th>
+            <th style="border: 1px solid #ddd; padding: 5px;">Amount</th>
+            <th style="border: 1px solid #ddd; padding: 5px;">status</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${refundData
+            .map(
+              (row) => `
+            <tr>
+              <td style="border: 1px solid #ddd; padding: 5px;">${row.branchName}</td>
+              <td style="border: 1px solid #ddd; padding: 5px;">${row.date}</td>
+              <td style="border: 1px solid #ddd; padding: 5px;">${row.reason}</td>
+              <td style="border: 1px solid #ddd; padding: 5px; text-align: right;">${row.amount}</td>
+              <td style="border: 1px solid #ddd; padding: 5px;">${row.status}</td>
+            </tr>
+          `
+            )
+            .join("")}
+        </tbody>
+      </table>
+    `;
+
+    const iframe = document.createElement("iframe");
+    iframe.style.position = "absolute";
+    iframe.style.width = "0";
+    iframe.style.height = "0";
+    iframe.style.border = "none";
+    document.body.appendChild(iframe);
+
+    const iframeDocument = iframe.contentWindow.document;
+    iframeDocument.open();
+    iframeDocument.write(`
+      <html>
+        <head>
+          <title>Reservation Monthly Report</title>
+        </head>
+        <body>
+          ${printContent}
+        </body>
+      </html>
+    `);
+    iframeDocument.close();
+
+    iframe.contentWindow.focus();
+    iframe.contentWindow.print();
+    iframe.addEventListener("afterprint", () => {
+      document.body.removeChild(iframe);
+    });
+  };
 
   const columns = [
     {
-      field: "reservationCode",
-      headerName: "Reservation Code",
-      flex: 0.6,
+      field: "branchName",
+      headerName: "Branch Name",
+      flex: 1,
       headerAlign: "center",
     },
     {
-      field: "branchName",
-      headerName: "Branch Name",
+      field: "date",
+      headerName: "Date",
       flex: 0.5,
       headerAlign: "center",
     },
     {
       field: "reason",
       headerName: "Reason",
-      flex: 0.5,
+      flex: 1,
       headerAlign: "center",
-    },
-    {
-      field: "status",
-      headerName: "Refund Status",
-      flex: 0.5,
-      headerAlign: "center",
-      align: "center",
-    },
-    {
-      field: "created_at",
-      headerName: "Request Date",
-      flex: 0.5,
-      headerAlign: "center",
-      align: "center",
-      renderCell: (params) => {
-        const date = new Date(params.row.created_at);
-        return date.toLocaleDateString("id-ID");
-      },
     },
     {
       field: "amount",
@@ -119,43 +189,62 @@ const ListCancel = () => {
       flex: 0.5,
       headerAlign: "center",
       align: "right",
-    },
-  ];
-
-  const itemsColumns = [
-    {
-      field: "MenuName",
-      headerName: "Menu Name",
-      headerAlign: "center",
-      flex: 1,
-    },
-    {
-      field: "CategoryName",
-      headerName: "Category Name",
-      headerAlign: "center",
-      flex: 1,
-    },
-    {
-      field: "OptionName",
-      headerName: "Option Name",
-      headerAlign: "center",
-      flex: 1,
-    },
-    {
-      field: "quantities",
-      headerName: "Quantities",
-      headerAlign: "center",
-      align: "right",
-      flex: 0.5,
+      renderCell: (params) => `Rp ${params.value.toLocaleString("id-ID")}`,
     },
   ];
 
   return (
     <Box m="20px">
-      <Header title="REQUEST REFUNDS" subtitle="List of Refund" />
+      <Header
+        title="REFUND DETAIL PER DATE"
+        subtitle="Detail of Refunds by Date"
+      />
+      <Box display="flex" gap="20px" mb="20px">
+        <FormControl sx={{ minWidth: 200 }}>
+          <InputLabel id="branch-select-label">Select Branch</InputLabel>
+          <Select
+            labelId="branch-select-label"
+            value={selectedBranchCode}
+            onChange={handleBranchChange}
+          >
+            {branchCodes.map((branch) => (
+              <MenuItem key={branch.branchCode} value={branch.branchCode}>
+                {branch.branchName}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <TextField
+          label="Start Date"
+          type="date"
+          value={startDate}
+          onChange={(e) => setStartDate(e.target.value)}
+          InputLabelProps={{ shrink: true }}
+        />
+        <TextField
+          label="End Date"
+          type="date"
+          value={endDate}
+          onChange={(e) => setEndDate(e.target.value)}
+          InputLabelProps={{ shrink: true }}
+        />
+        <Box ml="auto">
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={exportToExcel}
+            sx={{ marginRight: "10px" }}
+          >
+            Export to Excel
+          </Button>
+          <Button variant="contained" color="info" onClick={handlePrint}>
+            Print Report
+          </Button>
+        </Box>
+      </Box>
       <Box
         m="40px 0 0 0"
-        height="75vh"
+        height="68vh"
         sx={{
           "& .MuiDataGrid-root": {
             border: "none",
@@ -177,123 +266,15 @@ const ListCancel = () => {
             borderTop: "none",
             backgroundColor: colors.blueAccent[700],
           },
-          "& .MuiCheckbox-root": {
-            color: `${colors.greenAccent[200]} !important`,
-          },
-          "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-            color: `${colors.grey[100]} !important`,
-          },
-          "& .MuiDataGrid-columnHeaderTitle": {
-            display: "flex",
-            justifyContent: "center",
-            textAlign: "center",
-            fontSize: "0.9rem",
-            fontWeight: "bold",
-          },
         }}
       >
         <DataGrid
-          rows={refunds}
+          rows={refundData || []}
           columns={columns}
-          getRowId={(row) => row.reservationCode}
-          onRowClick={(params, event) => {
-            const isButtonClick = event.target.tagName === "BUTTON";
-            if (!isButtonClick) {
-              handleOpenModal(params.row.reservationCode);
-            }
-          }}
+          getRowId={(row) => `${row.date}-${row.reason}`}
+          components={{ Toolbar: GridToolbar }}
         />
       </Box>
-      <Modal open={openModal} onClose={handleCloseModal}>
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 800,
-            bgcolor: "background.paper",
-            border: "2px solid #000",
-            boxShadow: 24,
-            p: 4,
-          }}
-        >
-          <Typography variant="h6" component="h2">
-            Reservation Details
-          </Typography>
-          <Box
-            display="grid"
-            gridTemplateColumns="repeat(2, 1fr)"
-            gap={2}
-            mb={3}
-            sx={{
-              bgcolor:
-                theme.palette.mode === "dark"
-                  ? colors.primary[700]
-                  : colors.grey[200],
-              color:
-                theme.palette.mode === "dark"
-                  ? colors.grey[100]
-                  : colors.grey[800],
-              p: 2,
-              borderRadius: 2,
-            }}
-          >
-            <Typography>
-              <strong>Name:</strong> {selectedReservation?.customer?.name || ""}
-            </Typography>
-            <Typography>
-              <strong>Guest:</strong> {selectedReservation?.guest || ""}
-            </Typography>
-            <Typography>
-              <strong>Phone:</strong>{" "}
-              {selectedReservation?.customer?.phone || ""}
-            </Typography>
-            <Typography>
-              <strong>Area Name:</strong>{" "}
-              {selectedReservation?.tableAreaName || ""}
-            </Typography>
-            <Typography>
-              <strong>Date:</strong>{" "}
-              {new Date(selectedReservation?.date || "").toLocaleDateString(
-                "id-ID"
-              ) || ""}
-            </Typography>
-            <Typography>
-              <strong>Table Name:</strong>{" "}
-              {selectedReservation?.tableName || ""}
-            </Typography>
-            <Typography>
-              <strong>Time:</strong> {selectedReservation?.time || ""}
-            </Typography>
-            <Typography>
-              <strong>Note:</strong> {selectedReservation?.note || ""}
-            </Typography>
-            <Typography>
-              <strong>Note Reservation:</strong>{" "}
-              {selectedReservation?.noteReservation || ""}
-            </Typography>
-          </Box>
-          {/* Tabel Items */}
-          <Box mt={2} height="400px">
-            <DataGrid
-              rows={selectedItems || []}
-              columns={itemsColumns}
-              getRowId={(row) => row._id || Math.random()}
-              disableSelectionOnClick
-              hideFooter={true}
-            />
-          </Box>
-          <Button
-            onClick={handleCloseModal}
-            variant="contained"
-            color="error"
-            sx={{ mt: 2 }}
-          >
-            Close
-          </Button>
-        </Box>
-      </Modal>
     </Box>
   );
 };

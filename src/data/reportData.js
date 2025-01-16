@@ -143,3 +143,31 @@ export const fetchItemSummaryPerDate = async (
     return [];
   }
 };
+
+export const fetchRefundDetailPerDate = async (
+  selectedBranchCode,
+  startDate,
+  endDate
+) => {
+  try {
+    const token = localStorage.getItem("authToken");
+    const response = await axios.get(`${API}/refund_detail_per_date`, {
+      params: {
+        branchCode: selectedBranchCode,
+        startDate,
+        endDate,
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.data && response.data.data) {
+      return response.data.data;
+    }
+    return [];
+  } catch (error) {
+    console.error("Error fetching refund detail per date:", error);
+    return [];
+  }
+};
