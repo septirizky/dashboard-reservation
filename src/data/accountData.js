@@ -33,19 +33,15 @@ export const createAccount = async (formData) => {
   }
 };
 
-export const updateAccount = async (accountId, updatedData) => {
+export const updateAccount = async (accountId, data) => {
   try {
     const token = localStorage.getItem("authToken");
-    const response = await axios.put(
-      `${API}/accounts/${accountId}`,
-      updatedData,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await axios.put(`${API}/accounts/${accountId}`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
     return response.data;
   } catch (error) {
     console.error("Error updating account:", error);

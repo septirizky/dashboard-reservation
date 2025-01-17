@@ -19,8 +19,11 @@ const Account = () => {
   const [accounts, setAccounts] = useState([]);
   const [openCreateModal, setOpenCreateModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [editingAccount, setEditingAccount] = useState(null);
   const [accountForm, setAccountForm] = useState({
+    branchName: "",
+    branchCode: "",
     bankName: "",
     accountNumber: "",
     accountHolder: "",
@@ -30,11 +33,19 @@ const Account = () => {
   const handleModalClose = () => {
     setOpenCreateModal(false);
     setAccountForm({
+      branchName: "",
+      branchCode: "",
       bankName: "",
       accountNumber: "",
       accountHolder: "",
     });
   };
+
+  const userData = JSON.parse(localStorage.getItem("userData")) || {};
+  const branches = (userData.branchName || []).map((name, index) => ({
+    branchName: name,
+    branchCode: userData.branchCode[index],
+  }));
 
   const fetchAccount = async () => {
     try {
@@ -55,7 +66,13 @@ const Account = () => {
   };
 
   const handleFormSubmit = async () => {
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+
     const formData = new FormData();
+    formData.append("branchName", accountForm.branchName);
+    formData.append("branchCode", accountForm.branchCode);
     formData.append("bankName", accountForm.bankName);
     formData.append("accountNumber", accountForm.accountNumber);
     formData.append("accountHolder", accountForm.accountHolder);
@@ -63,7 +80,7 @@ const Account = () => {
     try {
       await createAccount(formData);
       handleModalClose();
-      toast.success("Account created successfully!");
+      toast.success("Account created successfully!", { autoClose: 2000 });
       fetchAccount();
     } catch (error) {
       console.error("Error creating Account:", error);
@@ -72,12 +89,16 @@ const Account = () => {
           error.response?.data?.message || error.message
         }`
       );
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const handleEditClick = (account) => {
     setEditingAccount(account);
     setAccountForm({
+      branchName: account.branchName,
+      branchCode: account.branchCode,
       bankName: account.bankName,
       accountNumber: account.accountNumber,
       accountHolder: account.accountHolder,
@@ -86,7 +107,13 @@ const Account = () => {
   };
 
   const handleEditSubmit = async () => {
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+
     const updatedData = {
+      branchName: accountForm.branchName,
+      branchCode: accountForm.branchCode,
       bankName: accountForm.bankName,
       accountNumber: accountForm.accountNumber,
       accountHolder: accountForm.accountHolder,
@@ -95,7 +122,7 @@ const Account = () => {
     try {
       await updateAccount(editingAccount.accountId, updatedData);
       setOpenEditModal(false);
-      toast.success("Account updated successfully!");
+      toast.success("Account updated successfully!", { autoClose: 2000 });
       fetchAccount();
     } catch (error) {
       console.error("Error updating account:", error);
@@ -104,6 +131,8 @@ const Account = () => {
           error.response?.data?.message || error.message
         }`
       );
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -111,7 +140,7 @@ const Account = () => {
     if (window.confirm("Are you sure you want to delete this account?")) {
       try {
         await deleteAccount(accountId);
-        toast.success("Account deleted successfully!");
+        toast.success("Account deleted successfully!", { autoClose: 2000 });
         fetchAccount();
       } catch (error) {
         console.error("Error deleting account:", error);
@@ -121,6 +150,12 @@ const Account = () => {
   };
 
   const columns = [
+    {
+      field: "branchName",
+      headerName: "Branch Name",
+      flex: 1,
+      headerAlign: "center",
+    },
     {
       field: "bankName",
       headerName: "Bank Name",
@@ -241,6 +276,32 @@ const Account = () => {
         >
           <h2>Create New Account</h2>
           <TextField
+            select
+            fullWidth
+            margin="normal"
+            label="Branch Name"
+            name="branchName"
+            value={accountForm.branchName}
+            onChange={(e) => {
+              const selectedBranch = branches.find(
+                (branch) => branch.branchName === e.target.value
+              );
+              setAccountForm((prev) => ({
+                ...prev,
+                branchName: selectedBranch.branchName,
+                branchCode: selectedBranch.branchCode,
+              }));
+            }}
+            SelectProps={{ native: true }}
+          >
+            <option value="">Select Branch</option>
+            {branches.map((branch) => (
+              <option key={branch.branchCode} value={branch.branchName}>
+                {branch.branchName}
+              </option>
+            ))}
+          </TextField>
+          <TextField
             fullWidth
             margin="normal"
             label="Bank Name"
@@ -278,8 +339,9 @@ const Account = () => {
               variant="contained"
               color="secondary"
               onClick={handleFormSubmit}
+              disabled={isSubmitting}
             >
-              Save
+              {isSubmitting ? "Saving..." : "Save"}
             </Button>
           </Box>
         </Box>
@@ -300,6 +362,33 @@ const Account = () => {
           }}
         >
           <h2>Edit Account</h2>
+          <TextField
+            select
+            fullWidth
+            margin="normal"
+            label="Branch Name"
+            name="branchName"
+            value={accountForm.branchName}
+            onChange={(e) => {
+              const selectedBranch = branches.find(
+                (branch) => branch.branchName === e.target.value
+              );
+              setAccountForm((prev) => ({
+                ...prev,
+                branchName: selectedBranch.branchName,
+                branchCode: selectedBranch.branchCode,
+              }));
+            }}
+            SelectProps={{ native: true }}
+          >
+            <option value="">Select Branch</option>
+            {branches.map((branch) => (
+              <option key={branch.branchCode} value={branch.branchName}>
+                {branch.branchName}
+              </option>
+            ))}
+          </TextField>
+
           <TextField
             fullWidth
             margin="normal"
@@ -338,8 +427,9 @@ const Account = () => {
               variant="contained"
               color="secondary"
               onClick={handleEditSubmit}
+              disabled={isSubmitting}
             >
-              Save Changes
+              {isSubmitting ? "Saving..." : "Save Changes"}
             </Button>
           </Box>
         </Box>
