@@ -92,7 +92,6 @@ const OrderSummary = () => {
       </table>
     `;
 
-    // Gunakan iframe untuk print
     const iframe = document.createElement("iframe");
     iframe.style.position = "absolute";
     iframe.style.width = "0";
@@ -195,15 +194,15 @@ const OrderSummary = () => {
             <p><strong>Area / No Table</strong> : ${
               reservationDetails.tableAreaName
             } / ${reservationDetails.tableName}</p>
-            <p><strong>Tanggal Reservasi</strong> : ${formattedDate}</p>
+            <p><strong>Tanggal Reservasi</strong> : <strong>${formattedDate}</strong></p>
             <p><strong>Jam Reservasi</strong> : ${reservationDetails.time}</p>
             <p><strong>Catatan</strong> : ${reservationDetails.note || "-"}</p>
-            <p><strong>Catatan Khusus</strong> : ${
+            <p><strong>Catatan Khusus</strong> : <strong> ${
               reservationDetails.noteReservation || "-"
-            }</p>
+            }</strong></p>
             <p><strong>Penyajian</strong> : ${reservationDetails.served}</p>
             <p><strong>DP</strong> : ${dpFormatted || "-"}</p>
-            <p><strong>Resevation Code</strong> : ${
+            <p><strong>Kode Resevasi</strong> : ${
               reservationDetails.reservationCode || "-"
             }</p>
           </div>
