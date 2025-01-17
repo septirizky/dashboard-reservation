@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Box, Button, Modal, TextField, useTheme } from "@mui/material";
+import { Box, Button, Modal, Switch, TextField, useTheme } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { DataGrid } from "@mui/x-data-grid";
@@ -11,6 +11,7 @@ import {
   deleteCategory,
   getCategory,
   updateCategory,
+  updateCategoryToggle,
 } from "../../data/categoryData";
 import { toast, ToastContainer } from "react-toastify";
 
@@ -23,6 +24,7 @@ const Category = () => {
   const [editingCategory, setEditingCategory] = useState(null);
   const [categoryForm, setCategoryForm] = useState({
     CategoryName: "",
+    Order: "",
     CategoryImage: null,
   });
   const [filteredCategory, setFilteredCategory] = useState([]);
@@ -33,6 +35,7 @@ const Category = () => {
     setOpenCreateModal(false);
     setCategoryForm({
       CategoryName: "",
+      Order: "",
       CategoryImage: null,
     });
   };
@@ -81,6 +84,7 @@ const Category = () => {
     formData.append("BranchCode", BranchCode);
     formData.append("BranchName", BranchName);
     formData.append("CategoryName", categoryForm.CategoryName);
+    formData.append("Order", categoryForm.Order);
     formData.append("CategoryImage", categoryForm.CategoryImage);
 
     try {
@@ -98,10 +102,26 @@ const Category = () => {
     }
   };
 
+  const handleToggleChange = async (id, field, value) => {
+    setCategories((prevCategories) =>
+      prevCategories.map((category) =>
+        category.CategoryId === id ? { ...category, [field]: value } : category
+      )
+    );
+
+    try {
+      await updateCategoryToggle(id, { [field]: value });
+    } catch (error) {
+      console.error(`Failed to update ${field} for CategoryId: ${id}`);
+      alert("Failed to update toggle. Please try again.");
+    }
+  };
+
   const handleEditClick = (category) => {
     setEditingCategory(category);
     setCategoryForm({
       CategoryName: category.CategoryName,
+      Order: category.Order,
     });
     setOpenEditModal(true);
   };
@@ -111,6 +131,7 @@ const Category = () => {
     formData.append("BranchCode", BranchCode);
     formData.append("BranchName", BranchName);
     formData.append("CategoryName", categoryForm.CategoryName);
+    formData.append("Order", categoryForm.Order);
     if (categoryForm.CategoryImage) {
       formData.append("CategoryImage", categoryForm.CategoryImage);
     }
@@ -162,6 +183,33 @@ const Category = () => {
       headerName: "Category Name",
       flex: 1,
       headerAlign: "center",
+    },
+    {
+      field: "Order",
+      headerName: "Order",
+      flex: 0.5,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "CategoryShow",
+      headerName: "Show",
+      flex: 0.8,
+      headerAlign: "center",
+      align: "center",
+      renderCell: (params) => (
+        <Switch
+          checked={params.row.CategoryShow}
+          onChange={(e) =>
+            handleToggleChange(
+              params.row.CategoryId,
+              "CategoryShow",
+              e.target.checked
+            )
+          }
+          color={params.row.CategoryShow ? "secondary" : "default"}
+        />
+      ),
     },
     {
       field: "CategoryThumbnail",
@@ -269,6 +317,7 @@ const Category = () => {
           getRowId={(row) => row.CategoryId}
           disableSelectionOnClick
           rowHeight={120}
+          sortModel={[{ field: "Order", sort: "asc" }]}
         />
       </Box>
       <Modal open={openCreateModal} onClose={handleModalClose}>
@@ -292,6 +341,15 @@ const Category = () => {
             label="Category Name"
             name="CategoryName"
             value={categoryForm.CategoryName}
+            onChange={handleInputChange}
+          />
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Order"
+            name="Order"
+            value={categoryForm.Order}
+            type="number"
             onChange={handleInputChange}
           />
           <TextField
@@ -341,6 +399,15 @@ const Category = () => {
             label="Category Name"
             name="CategoryName"
             value={categoryForm.CategoryName}
+            onChange={handleInputChange}
+          />
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Order"
+            name="Order"
+            value={categoryForm.Order}
+            type="number"
             onChange={handleInputChange}
           />
           <TextField

@@ -32,6 +32,26 @@ export const getCategory = async (branchCode) => {
   }
 };
 
+export const updateCategoryToggle = async (categoryId, data) => {
+  try {
+    const token = localStorage.getItem("authToken");
+    const response = await axios.patch(
+      `${API}/category/update_toggle/${categoryId}`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error updating toggle:", error);
+    throw error;
+  }
+};
+
 export const updateCategory = async (categoryId, formData) => {
   try {
     const token = localStorage.getItem("authToken");
