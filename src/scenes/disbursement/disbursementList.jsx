@@ -65,6 +65,12 @@ const DisbursementList = () => {
 
   const columns = [
     {
+      field: "branchName",
+      headerName: "Branch Name",
+      flex: 1,
+      headerAlign: "center",
+    },
+    {
       field: "external_id",
       headerName: "External ID",
       flex: 1,
@@ -119,6 +125,12 @@ const DisbursementList = () => {
           {params.row.status}
         </Typography>
       ),
+    },
+    {
+      field: "name",
+      headerName: "Name",
+      flex: 0.7,
+      headerAlign: "center",
     },
     {
       field: "createdAtFormatted",

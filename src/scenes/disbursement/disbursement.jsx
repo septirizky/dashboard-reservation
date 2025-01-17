@@ -29,8 +29,10 @@ const Disbursement = () => {
   const [accounts, setAccounts] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [openFormModal, setOpenFormModal] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
   const [reservationDetails, setReservationDetails] = useState([]);
+  const [filteredAccounts, setFilteredAccounts] = useState([]);
   const [formData, setFormData] = useState({
     bankCode: "",
     accountHolderName: "",
@@ -80,6 +82,11 @@ const Disbursement = () => {
     const branchCode = row.branchCode;
 
     try {
+      const branchAccounts = accounts.filter(
+        (account) => account.branchCode === branchCode
+      );
+      setFilteredAccounts(branchAccounts);
+
       const allReservations = await fetchReservationsByBranchCodes([
         branchCode,
       ]);
@@ -163,6 +170,10 @@ const Disbursement = () => {
   };
 
   const handleFormSubmit = async () => {
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+
     try {
       const randomNumber = Math.floor(10000 + Math.random() * 90000);
       const date = new Date();
@@ -170,7 +181,7 @@ const Disbursement = () => {
         date.getMonth() + 1
       }${date.getDate()}${date.getHours()}${date.getMinutes()}${date.getSeconds()}${randomNumber}`;
 
-      const userId = JSON.parse(localStorage.getItem("userData")).userId;
+      const name = JSON.parse(localStorage.getItem("userData")).name;
 
       const reservationCodes = reservationDetails.map(
         (reservation) => reservation.reservationCode
@@ -178,8 +189,10 @@ const Disbursement = () => {
 
       const disbursementData = {
         external_id: externalId,
-        userId,
+        name,
         amount: selectedRow.amountAfterMDR,
+        branchName: selectedRow.branchName,
+        branchCode: selectedRow.branchCode,
         bank_code: formData.bankCode,
         account_holder_name: formData.accountHolderName,
         account_number: formData.accountNumber,
@@ -199,6 +212,8 @@ const Disbursement = () => {
       toast.error("Error submitting disbursement request.", {
         autoClose: 2000,
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -418,7 +433,7 @@ const Disbursement = () => {
             <MenuItem value="" disabled>
               Bank Name
             </MenuItem>
-            {accounts.map((account) => (
+            {filteredAccounts.map((account) => (
               <MenuItem key={account.accountId} value={account.bankName}>
                 {account.bankName}
               </MenuItem>
@@ -434,7 +449,7 @@ const Disbursement = () => {
             <MenuItem value="" disabled>
               Account Holder Name
             </MenuItem>
-            {accounts.map((account) => (
+            {filteredAccounts.map((account) => (
               <MenuItem key={account.accountId} value={account.accountHolder}>
                 {account.accountHolder}
               </MenuItem>
@@ -450,7 +465,7 @@ const Disbursement = () => {
             <MenuItem value="" disabled>
               Account Number
             </MenuItem>
-            {accounts.map((account) => (
+            {filteredAccounts.map((account) => (
               <MenuItem key={account.accountId} value={account.accountNumber}>
                 {account.accountNumber}
               </MenuItem>
@@ -475,8 +490,9 @@ const Disbursement = () => {
               variant="contained"
               color="secondary"
               onClick={handleFormSubmit}
+              disabled={isSubmitting}
             >
-              Submit
+              {isSubmitting ? "Submitting..." : "Submit"}
             </Button>
           </Box>
         </Box>
