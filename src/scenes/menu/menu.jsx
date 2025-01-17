@@ -33,6 +33,7 @@ const Menu = () => {
   const [categories, setCategories] = useState([]);
   const [openCreateModal, setOpenCreateModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [editingMenu, setEditingMenu] = useState(null);
   const [menuForm, setMenuForm] = useState({
     CategoryId: "",
@@ -127,7 +128,7 @@ const Menu = () => {
       await updateMenuToggle(id, { [field]: value });
     } catch (error) {
       console.error(`Failed to update ${field} for MenuId: ${id}`);
-      alert("Failed to update toggle. Please try again.");
+      toast.error("Failed to update toggle. Please try again.");
     }
   };
 
@@ -153,6 +154,10 @@ const Menu = () => {
   };
 
   const handleFormSubmit = async () => {
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+
     const formData = new FormData();
     formData.append("BranchCode", BranchCode);
     formData.append("BranchName", BranchName);
@@ -170,7 +175,7 @@ const Menu = () => {
     try {
       await createMenu(formData);
       handleModalClose();
-      toast.success("Menu created successfully!");
+      toast.success("Menu created successfully!", { autoClose: 2000 });
       fetchMenuAndCategory();
     } catch (error) {
       console.error("Error creating menu:", error);
@@ -198,6 +203,10 @@ const Menu = () => {
   };
 
   const handleEditSubmit = async () => {
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+
     const formData = new FormData();
     formData.append("BranchCode", BranchCode);
     formData.append("BranchName", BranchName);
@@ -217,7 +226,7 @@ const Menu = () => {
     try {
       await updateMenu(editingMenu.MenuId, formData);
       setOpenEditModal(false);
-      toast.success("Menu updated successfully!");
+      toast.success("Menu updated successfully!", { autoClose: 2000 });
       fetchMenuAndCategory();
     } catch (error) {
       console.error("Error updating menu:", error);
@@ -233,7 +242,7 @@ const Menu = () => {
     if (window.confirm("Are you sure you want to delete this menu?")) {
       try {
         await deleteMenu(menuId);
-        toast.success("Menu deleted successfully!");
+        toast.success("Menu deleted successfully!", { autoClose: 2000 });
         fetchMenuAndCategory();
       } catch (error) {
         console.error("Error deleting menu:", error);
@@ -325,7 +334,6 @@ const Menu = () => {
         />
       ),
     },
-
     {
       field: "MenuKind",
       headerName: "Menu Kind",
@@ -569,8 +577,9 @@ const Menu = () => {
               variant="contained"
               color="secondary"
               onClick={handleFormSubmit}
+              disabled={isSubmitting}
             >
-              Save
+              {isSubmitting ? "Saving..." : "Save"}
             </Button>
           </Box>
         </Box>
@@ -708,8 +717,9 @@ const Menu = () => {
               variant="contained"
               color="secondary"
               onClick={handleEditSubmit}
+              disabled={isSubmitting}
             >
-              Save Changes
+              {isSubmitting ? "Saving..." : "Save Changes"}
             </Button>
           </Box>
         </Box>

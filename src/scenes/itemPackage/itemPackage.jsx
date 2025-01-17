@@ -37,6 +37,7 @@ const ItemPackage = () => {
   const [searchItemDetail, setSearchItemDetail] = useState("");
   const [searchItemOption, setSearchItemOption] = useState("");
   const [openCreateModal, setOpenCreateModal] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
   const [selectedOptionPackages, setSelectedOptionPackages] = useState([]);
   const [selectedItemDetails, setSelectedItemDetails] = useState([]);
@@ -126,20 +127,22 @@ const ItemPackage = () => {
   const handleSelectItem = (itemId, setSelectedState, isUnlimited = false) => {
     setSelectedState((prevSelected) => {
       if (isUnlimited) {
-        // Tidak ada batasan untuk jumlah pilihan
         return prevSelected.includes(itemId)
           ? prevSelected.filter((id) => id !== itemId)
           : [...prevSelected, itemId];
       }
 
-      // Logika default (batas hanya satu pilihan)
       return prevSelected.includes(itemId) ? [] : [itemId];
     });
   };
 
   const handleSubmit = async () => {
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+
     if (selectedItemDetails.length === 0) {
-      toast.error("Item Package Detail harus dipilih.");
+      toast.error("Item Package Detail harus dipilih.", { autoClose: 2000 });
       return;
     }
 
@@ -181,7 +184,7 @@ const ItemPackage = () => {
         await createItemPackage(data);
       }
 
-      toast.success("Item Packages created successfully!");
+      toast.success("Item Packages created successfully!", { autoClose: 2000 });
       handleModalClose();
       fetchItemPackageAll();
     } catch (error) {
@@ -199,7 +202,7 @@ const ItemPackage = () => {
     if (window.confirm("Apakah Anda yakin ingin menghapus item ini?")) {
       try {
         await deleteItemPackage(itemPackageId);
-        toast.success("Item Package berhasil dihapus.");
+        toast.success("Item Package berhasil dihapus.", { autoClose: 2000 });
         fetchItemPackageAll();
       } catch (error) {
         console.error("Error deleting item package:", error);
@@ -356,7 +359,6 @@ const ItemPackage = () => {
         >
           <h2>Create New Item Package</h2>
           <Box display="flex" gap={2}>
-            {/* Input untuk Alt Menu Name */}
             <TextField
               label="Alt Menu Name"
               value={altMenuName}
@@ -364,7 +366,6 @@ const ItemPackage = () => {
               fullWidth
               sx={{ mb: 2 }}
             />
-            {/* Input untuk Item Package Detail Price */}
             <TextField
               label="Item Package Detail Price"
               value={itemPackageDetailPrice}
@@ -411,7 +412,6 @@ const ItemPackage = () => {
               </List>
             </Box>
 
-            {/* Kolom PackageName */}
             <Box
               sx={{
                 width: "25%",
@@ -452,7 +452,6 @@ const ItemPackage = () => {
               </List>
             </Box>
 
-            {/* Kolom ItemPackageDetail */}
             <Box
               sx={{
                 width: "25%",
@@ -474,13 +473,12 @@ const ItemPackage = () => {
                   <ListItem
                     key={detail.MenuId}
                     button
-                    onClick={
-                      () =>
-                        handleSelectItem(
-                          detail.MenuId,
-                          setSelectedItemDetails,
-                          true
-                        ) // Tidak dibatasi
+                    onClick={() =>
+                      handleSelectItem(
+                        detail.MenuId,
+                        setSelectedItemDetails,
+                        true
+                      )
                     }
                   >
                     <Checkbox
@@ -493,7 +491,6 @@ const ItemPackage = () => {
               </List>
             </Box>
 
-            {/* Kolom ItemOptionPackage */}
             <Box
               sx={{
                 width: "25%",
@@ -530,7 +527,6 @@ const ItemPackage = () => {
             </Box>
           </Box>
 
-          {/* Tombol Simpan */}
           <Box mt={2} display="flex" justifyContent="flex-end">
             <Button
               variant="contained"
@@ -544,8 +540,9 @@ const ItemPackage = () => {
               variant="contained"
               color="secondary"
               onClick={handleSubmit}
+              disabled={isSubmitting}
             >
-              Save
+              {isSubmitting ? "Saving..." : "Save"}
             </Button>
           </Box>
         </Box>

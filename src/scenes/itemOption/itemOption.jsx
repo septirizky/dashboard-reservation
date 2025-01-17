@@ -37,6 +37,7 @@ const ItemOption = () => {
   const [searchMenu, setSearchMenu] = useState("");
   const [searchOption, setSearchOption] = useState("");
   const [openCreateModal, setOpenCreateModal] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [itemOptionForm, setItemOptionForm] = useState({
     mode: "Category",
     selectedItems: [],
@@ -114,8 +115,12 @@ const ItemOption = () => {
   const BranchName = JSON.parse(localStorage.getItem("userData")).branchName;
 
   const handleSubmit = async () => {
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+
     if (!itemOptionForm.selectedItems.length) {
-      toast.error("Pilih setidaknya satu item!");
+      toast.error("Pilih setidaknya satu item!", { autoClose: 2000 });
       return;
     }
 
@@ -179,7 +184,7 @@ const ItemOption = () => {
         }
       }
 
-      toast.success("Item Option updated successfully!");
+      toast.success("Item Option updated successfully!", { autoClose: 2000 });
       fetchAll();
       handleModalClose();
     } catch (error) {
@@ -196,7 +201,7 @@ const ItemOption = () => {
     if (window.confirm("Are you sure you want to delete this item option?")) {
       try {
         await deleteItemOption(itemOptionId);
-        toast.success("Item Option deleted successfully!");
+        toast.success("Item Option deleted successfully!", { autoClose: 2000 });
         fetchAll();
       } catch (error) {
         console.error("Error deleting item option:", error);
@@ -517,8 +522,9 @@ const ItemOption = () => {
               variant="contained"
               color="secondary"
               onClick={handleSubmit}
+              disabled={isSubmitting}
             >
-              Save
+              {isSubmitting ? "Saving..." : "Save"}
             </Button>
           </Box>
         </Box>

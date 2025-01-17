@@ -21,6 +21,7 @@ const Category = () => {
   const [categories, setCategories] = useState([]);
   const [openCreateModal, setOpenCreateModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
   const [categoryForm, setCategoryForm] = useState({
     CategoryName: "",
@@ -80,6 +81,10 @@ const Category = () => {
   };
 
   const handleFormSubmit = async () => {
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+
     const formData = new FormData();
     formData.append("BranchCode", BranchCode);
     formData.append("BranchName", BranchName);
@@ -90,7 +95,7 @@ const Category = () => {
     try {
       await createCategory(formData);
       handleModalClose();
-      toast.success("Category created successfully!");
+      toast.success("Category created successfully!", { autoClose: 2000 });
       fetchCategory();
     } catch (error) {
       console.error("Error creating category:", error);
@@ -99,6 +104,8 @@ const Category = () => {
           error.response?.data?.message || error.message
         }`
       );
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -113,7 +120,7 @@ const Category = () => {
       await updateCategoryToggle(id, { [field]: value });
     } catch (error) {
       console.error(`Failed to update ${field} for CategoryId: ${id}`);
-      alert("Failed to update toggle. Please try again.");
+      toast.error("Failed to update toggle. Please try again.");
     }
   };
 
@@ -127,6 +134,10 @@ const Category = () => {
   };
 
   const handleEditSubmit = async () => {
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+
     const formData = new FormData();
     formData.append("BranchCode", BranchCode);
     formData.append("BranchName", BranchName);
@@ -139,7 +150,7 @@ const Category = () => {
     try {
       await updateCategory(editingCategory.CategoryId, formData);
       setOpenEditModal(false);
-      toast.success("Category updated successfully!");
+      toast.success("Category updated successfully!", { autoClose: 2000 });
       fetchCategory();
     } catch (error) {
       console.error("Error updating category:", error);
@@ -148,6 +159,8 @@ const Category = () => {
           error.response?.data?.message || error.message
         }`
       );
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -155,7 +168,7 @@ const Category = () => {
     if (window.confirm("Are you sure you want to delete this category?")) {
       try {
         await deleteCategory(categoryId);
-        toast.success("Category deleted successfully!");
+        toast.success("Category deleted successfully!", { autoClose: 2000 });
         fetchCategory();
       } catch (error) {
         console.error("Error deleting category:", error);
@@ -371,8 +384,9 @@ const Category = () => {
               variant="contained"
               color="secondary"
               onClick={handleFormSubmit}
+              disabled={isSubmitting}
             >
-              Save
+              {isSubmitting ? "Saving..." : "Save"}
             </Button>
           </Box>
         </Box>
@@ -430,8 +444,9 @@ const Category = () => {
               variant="contained"
               color="secondary"
               onClick={handleEditSubmit}
+              disabled={isSubmitting}
             >
-              Save Changes
+              {isSubmitting ? "Saving..." : "Save Changes"}
             </Button>
           </Box>
         </Box>

@@ -32,8 +32,8 @@ const OptionPackage = () => {
   const [menus, setMenus] = useState([]);
   const [openCreateModal, setOpenCreateModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [editingOption, setEditingOption] = useState(null);
-
   const [optionForm, setOptionForm] = useState({
     MenuPackageName: "",
     OptionPackageName: "",
@@ -114,6 +114,10 @@ const OptionPackage = () => {
   };
 
   const handleFormSubmit = async () => {
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+
     const formData = new FormData();
     formData.append("BranchCode", BranchCode);
     formData.append("BranchName", BranchName);
@@ -126,7 +130,9 @@ const OptionPackage = () => {
     try {
       await createOptionPackage(formData);
       handleModalClose();
-      toast.success("Option package created successfully!");
+      toast.success("Option package created successfully!", {
+        autoClose: 2000,
+      });
       fetchOptionPackageAndMenu();
     } catch (error) {
       console.error("Error creating option:", error);
@@ -151,6 +157,10 @@ const OptionPackage = () => {
   };
 
   const handleEditSubmit = async () => {
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+
     const formData = new FormData();
     formData.append("BranchCode", BranchCode);
     formData.append("BranchName", BranchName);
@@ -163,7 +173,7 @@ const OptionPackage = () => {
     try {
       await updateOptionPackage(editingOption.OptionPackageId, formData);
       setOpenEditModal(false);
-      toast.success("Option updated successfully!");
+      toast.success("Option updated successfully!", { autoClose: 2000 });
       fetchOptionPackageAndMenu();
     } catch (error) {
       console.error("Error updating option:", error);
@@ -179,7 +189,7 @@ const OptionPackage = () => {
     if (window.confirm("Are you sure you want to delete this option?")) {
       try {
         await deleteOptionPackage(optionPackageId);
-        toast.success("Option deleted successfully!");
+        toast.success("Option deleted successfully!", { autoClose: 2000 });
         fetchOptionPackageAndMenu();
       } catch (error) {
         console.error("Error deleting option:", error);
@@ -417,8 +427,9 @@ const OptionPackage = () => {
               variant="contained"
               color="secondary"
               onClick={handleFormSubmit}
+              disabled={isSubmitting}
             >
-              Save
+              {isSubmitting ? "Saving..." : "Save"}
             </Button>
           </Box>
         </Box>
@@ -506,8 +517,9 @@ const OptionPackage = () => {
               variant="contained"
               color="secondary"
               onClick={handleEditSubmit}
+              disabled={isSubmitting}
             >
-              Save Changes
+              {isSubmitting ? "Saving..." : "Save Changes"}
             </Button>
           </Box>
         </Box>

@@ -20,6 +20,7 @@ const Option = () => {
   const [options, setOptions] = useState([]);
   const [openCreateModal, setOpenCreateModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [editingOption, setEditingOption] = useState(null);
   const [optionForm, setOptionForm] = useState({
     OptionText: "",
@@ -77,6 +78,10 @@ const Option = () => {
   };
 
   const handleFormSubmit = async () => {
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+
     const formData = new FormData();
     formData.append("BranchCode", BranchCode);
     formData.append("BranchName", BranchName);
@@ -88,7 +93,7 @@ const Option = () => {
     try {
       await createOption(formData);
       handleModalClose();
-      toast.success("Option created successfully!");
+      toast.success("Option created successfully!", { autoClose: 2000 });
       fetchOption();
     } catch (error) {
       console.error("Error creating option:", error);
@@ -113,6 +118,10 @@ const Option = () => {
 
   const handleEditSubmit = async () => {
     const formData = new FormData();
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+
     formData.append("BranchCode", BranchCode);
     formData.append("BranchName", BranchName);
     formData.append("OptionText", optionForm.OptionText);
@@ -123,7 +132,7 @@ const Option = () => {
     try {
       await updateOption(editingOption.OptionId, formData);
       setOpenEditModal(false);
-      toast.success("Option updated successfully!");
+      toast.success("Option updated successfully!", { autoClose: 2000 });
       fetchOption();
     } catch (error) {
       console.error("Error updating option:", error);
@@ -139,7 +148,7 @@ const Option = () => {
     if (window.confirm("Are you sure you want to delete this option?")) {
       try {
         await deleteOption(optionId);
-        toast.success("Option deleted successfully!");
+        toast.success("Option deleted successfully!", { autoClose: 2000 });
         fetchOption();
       } catch (error) {
         console.error("Error deleting option:", error);
@@ -318,8 +327,9 @@ const Option = () => {
               variant="contained"
               color="secondary"
               onClick={handleFormSubmit}
+              disabled={isSubmitting}
             >
-              Save
+              {isSubmitting ? "Saving..." : "Save"}
             </Button>
           </Box>
         </Box>
@@ -387,8 +397,9 @@ const Option = () => {
               variant="contained"
               color="secondary"
               onClick={handleEditSubmit}
+              disabled={isSubmitting}
             >
-              Save Changes
+              {isSubmitting ? "Saving..." : "Save Changes"}
             </Button>
           </Box>
         </Box>
