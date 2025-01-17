@@ -141,6 +141,8 @@ const OptionPackage = () => {
           error.response?.data?.message || error.message
         }`
       );
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -182,6 +184,8 @@ const OptionPackage = () => {
           error.response?.data?.message || error.message
         }`
       );
+    } finally {
+      setIsSubmitting(false);
     }
   };
 

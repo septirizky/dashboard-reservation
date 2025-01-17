@@ -184,6 +184,8 @@ const Menu = () => {
           error.response?.data?.message || error.message
         }`
       );
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -235,6 +237,8 @@ const Menu = () => {
           error.response?.data?.message || error.message
         }`
       );
+    } finally {
+      setIsSubmitting(false);
     }
   };
 

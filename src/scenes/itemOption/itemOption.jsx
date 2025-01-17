@@ -194,6 +194,8 @@ const ItemOption = () => {
           error.response?.data?.message || error.message
         }`
       );
+    } finally {
+      setIsSubmitting(false);
     }
   };
 

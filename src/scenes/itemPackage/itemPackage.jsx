@@ -190,6 +190,8 @@ const ItemPackage = () => {
     } catch (error) {
       console.error("Error saving data:", error);
       toast.error("Failed to save data.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
