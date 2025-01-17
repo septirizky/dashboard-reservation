@@ -279,7 +279,6 @@ const Account = () => {
             select
             fullWidth
             margin="normal"
-            label="Branch Name"
             name="branchName"
             value={accountForm.branchName}
             onChange={(e) => {
@@ -366,7 +365,6 @@ const Account = () => {
             select
             fullWidth
             margin="normal"
-            label="Branch Name"
             name="branchName"
             value={accountForm.branchName}
             onChange={(e) => {
