@@ -223,7 +223,9 @@ const BranchQuota = () => {
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            width: 800,
+            width: { xs: "90%", sm: "80%", md: 800 },
+            maxHeight: "90vh",
+            overflowY: "auto",
             bgcolor: "background.paper",
             p: 4,
             boxShadow: 24,
@@ -237,7 +239,10 @@ const BranchQuota = () => {
             Edit Quota for {selectedDate}
           </Typography>
 
-          <Box mt={2} sx={{ height: 685, width: "100%" }}>
+          <Box
+            mt={2}
+            sx={{ height: { xs: 400, sm: 500, md: 685 }, width: "100%" }}
+          >
             <DataGrid
               rows={quotaData}
               columns={[
