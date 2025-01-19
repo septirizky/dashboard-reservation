@@ -51,6 +51,7 @@ import PaymentDailyReport from "./scenes/report/dailyPayment";
 import ItemMenuReport from "./scenes/report/itemMenu";
 import CustomerReport from "./scenes/report/customer";
 import Account from "./scenes/account";
+import UpComingReservation from "./scenes/orderSummary/upcoming";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -164,6 +165,14 @@ function App() {
                   element={
                     <ProtectedRoute allowedRoles={["IT", "GRO"]}>
                       <OrderSummary />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/upcoming"
+                  element={
+                    <ProtectedRoute allowedRoles={["IT", "GRO"]}>
+                      <UpComingReservation />
                     </ProtectedRoute>
                   }
                 />
@@ -309,7 +318,7 @@ function App() {
                 <Route
                   path="/category"
                   element={
-                    <ProtectedRoute allowedRoles={["GRO"]}>
+                    <ProtectedRoute allowedRoles={["IT", "GRO"]}>
                       <Category />
                     </ProtectedRoute>
                   }
@@ -317,7 +326,7 @@ function App() {
                 <Route
                   path="/menu"
                   element={
-                    <ProtectedRoute allowedRoles={["GRO"]}>
+                    <ProtectedRoute allowedRoles={["IT", "GRO"]}>
                       <Menu />
                     </ProtectedRoute>
                   }
@@ -325,7 +334,7 @@ function App() {
                 <Route
                   path="/option"
                   element={
-                    <ProtectedRoute allowedRoles={["GRO"]}>
+                    <ProtectedRoute allowedRoles={["IT", "GRO"]}>
                       <Option />
                     </ProtectedRoute>
                   }
@@ -333,7 +342,7 @@ function App() {
                 <Route
                   path="/item_option"
                   element={
-                    <ProtectedRoute allowedRoles={["GRO"]}>
+                    <ProtectedRoute allowedRoles={["IT", "GRO"]}>
                       <ItemOption />
                     </ProtectedRoute>
                   }
@@ -341,7 +350,7 @@ function App() {
                 <Route
                   path="/option_package"
                   element={
-                    <ProtectedRoute allowedRoles={["GRO"]}>
+                    <ProtectedRoute allowedRoles={["IT", "GRO"]}>
                       <OptionPackage />
                     </ProtectedRoute>
                   }
@@ -349,7 +358,7 @@ function App() {
                 <Route
                   path="/item_package"
                   element={
-                    <ProtectedRoute allowedRoles={["GRO"]}>
+                    <ProtectedRoute allowedRoles={["IT", "GRO"]}>
                       <ItemPackage />
                     </ProtectedRoute>
                   }

@@ -118,3 +118,24 @@ export const fetchReservationDetails = async (reservationCodes) => {
     return [];
   }
 };
+
+export const fetchReservationsByBranchAndDate = async (
+  branchCode,
+  dateFilter
+) => {
+  try {
+    const token = localStorage.getItem("authToken");
+    const response = await axios.get(`${API}/upcoming_reservation`, {
+      params: { branchCode, dateFilter },
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (response.data && response.data.data) {
+      return response.data.data;
+    }
+    return [];
+  } catch (error) {
+    console.error("Error fetching reservations by branch and date:", error);
+    return [];
+  }
+};

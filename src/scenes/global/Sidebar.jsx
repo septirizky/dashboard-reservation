@@ -118,7 +118,6 @@ const Sidebar = () => {
         "Manager Accounting",
         "Assistant Manager Accounting",
         "Head Accounting",
-        "GRO",
       ],
     },
     // {
@@ -383,6 +382,12 @@ const Sidebar = () => {
     {
       title: "Order Summary",
       to: "/order_summary",
+      icon: <SummarizeOutlinedIcon />,
+      roles: ["IT", "GRO"],
+    },
+    {
+      title: "Upcoming",
+      to: "/upcoming",
       icon: <SummarizeOutlinedIcon />,
       roles: ["IT", "GRO"],
     },
